@@ -46,6 +46,10 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('uspFirstSlide') uspFirstSlideRef?: ElementRef<HTMLElement>;
   @ViewChild('servicesSlide') servicesSlideRef?: ElementRef<HTMLElement>;
   @ViewChild('servicesZoomBox') servicesZoomBoxRef?: ElementRef<HTMLElement>;
+  @ViewChild('showcaseSection') showcaseSectionRef?: ElementRef<HTMLElement>;
+
+  private showcaseCtx?: gsap.Context;
+  private showcaseTrigger?: ScrollTrigger;
 
   activeCaption = 0;
   captions = [
@@ -54,6 +58,37 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
     { tag: '03 — REPAINTED', title: 'A calm, blank canvas' },
     { tag: '04 — RESTYLED', title: 'New furniture finds its place' },
     { tag: '05 — AFTER', title: 'Fully renovated' },
+  ];
+
+  // Showcase Items for Vertical Stacking Zoom In / Out Sequence
+  showcaseItems = [
+    {
+      id: '01',
+      tag: 'LIVING SPACE',
+      title: 'VILLA NOUVELLE',
+      desc: 'Expansive double-height glazing, integrated minimalist joinery, and monolithic stone flooring connecting interior luxury with natural surroundings.',
+      location: 'BARCELONA',
+      year: '2024',
+      image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=80',
+    },
+    {
+      id: '02',
+      tag: 'CULINARY ARCHITECTURE',
+      title: 'ATELIER HAUS',
+      desc: 'Sculptural quartzite kitchen island, concealed acoustic fluted timber panels, and tailored ambient illumination engineered for effortless culinary living.',
+      location: 'MADRID',
+      year: '2024',
+      image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=80',
+    },
+    {
+      id: '03',
+      tag: 'SANCTUARY SUITE',
+      title: 'SKYLINE RESIDENCE',
+      desc: 'Frameless panoramic perimeter glazing, bespoke floating walnut bedframe, and custom concealed dressing architecture for ultimate private sanctuary.',
+      location: 'VALENCIA',
+      year: '2023',
+      image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1600&q=80',
+    },
   ];
 
   // 12 columns x 8 rows pixel-block overlay array (96 blocks)
@@ -363,6 +398,9 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
     // Initialize the unified About & USP portfolio section with master ScrollTrigger
     this.initUspScrollTrigger();
 
+    // Initialize the vertical stacking zoom showcase section with ScrollTrigger
+    this.initShowcaseScrollTrigger();
+
     // Trigger initial scroll calculation
     this.onWindowScroll();
   }
@@ -624,10 +662,98 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
     }, aboutSection);
   }
 
+  /**
+   * Vertical Stacking Zoom In/Out Showcase ScrollTrigger:
+   * 1. First image enters from bottom towards center, starts small, zooms in & expands to showcase size.
+   * 2. Heading is positioned at top of image, description at bottom.
+   * 3. On scrolling, first image moves to top, zooming out & shrinking in size.
+   * 4. Simultaneously, the next image enters from bottom, zooming in & expanding in size.
+   */
+  private initShowcaseScrollTrigger(): void {
+    if (!this.showcaseSectionRef) return;
+
+    const showcaseSection = this.showcaseSectionRef.nativeElement;
+    const cards = gsap.utils.toArray<HTMLElement>(showcaseSection.querySelectorAll('.showcase-card'));
+
+    if (cards.length === 0) return;
+
+    this.showcaseCtx = gsap.context(() => {
+      // Set initial geometry:
+      // Card 0 starts small from bottom
+      gsap.set(cards[0], {
+        y: '65%',
+        scale: 0.45,
+        opacity: 0,
+      });
+
+      // Subsequent cards start off-screen below
+      for (let i = 1; i < cards.length; i++) {
+        gsap.set(cards[i], {
+          y: '80%',
+          scale: 0.4,
+          opacity: 0,
+        });
+      }
+
+      const showcaseTl = gsap.timeline({ paused: true });
+
+      // Step 1: First image moves from bottom to center, zooms in and expands to full showcase size
+      showcaseTl.to(cards[0], {
+        y: '0%',
+        scale: 1.0,
+        opacity: 1,
+        duration: 1.2,
+        ease: 'power3.out',
+      }, 0);
+
+      // (Hold window to read Card 0)
+
+      // Step 2 & 3: Transitions between sequential images
+      for (let i = 0; i < cards.length - 1; i++) {
+        const transitionTime = 1.6 + i * 2.0;
+        const d = 1.3;
+
+        // Current image moves to top while zooming out, reducing size, and fading
+        showcaseTl.to(cards[i], {
+          y: '-75%',
+          scale: 0.45,
+          opacity: 0,
+          duration: d,
+          ease: 'power2.inOut',
+        }, transitionTime);
+
+        // Simultaneously, next image enters from bottom to center, increasing size and zooming in
+        showcaseTl.to(cards[i + 1], {
+          y: '0%',
+          scale: 1.0,
+          opacity: 1,
+          duration: d,
+          ease: 'power2.inOut',
+        }, transitionTime);
+      }
+
+      this.showcaseTrigger = ScrollTrigger.create({
+        trigger: showcaseSection,
+        start: 'top top',
+        end: () => '+=' + window.innerHeight * (cards.length * 1.8),
+        pin: true,
+        scrub: 0.85,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+        onUpdate: (self) => {
+          showcaseTl.progress(self.progress);
+        },
+      });
+
+    }, showcaseSection);
+  }
+
   ngOnDestroy(): void {
     if (this.animFrameId) {
       cancelAnimationFrame(this.animFrameId);
     }
+    this.showcaseCtx?.revert();
+    this.showcaseTrigger?.kill();
     this.uspCtx?.revert();
     this.uspTrigger?.kill();
     this.aboutTl?.kill();

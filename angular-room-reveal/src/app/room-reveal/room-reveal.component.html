@@ -269,3 +269,48 @@
     </div>
   </div>
 </section>
+
+<!-- 4. Vertical Stacking Zoom Showcase Section -->
+<section class="showcase-scrolly" id="showcase" #showcaseSection>
+  <div class="showcase-stage" #showcaseStage>
+    <div class="showcase-ambient-bg"></div>
+
+    <!-- Editorial Watermark Header -->
+    <div class="showcase-bg-typography">
+      <span>FEATURED SPACES</span>
+    </div>
+
+    <!-- Centered Card Container for Zoom In/Out Sequence -->
+    <div class="showcase-stack">
+      <div *ngFor="let item of showcaseItems; let i = index" class="showcase-card" [attr.data-showcase-index]="i">
+        
+        <!-- Heading on TOP of the image -->
+        <div class="showcase-header">
+          <div class="showcase-header-left">
+            <span class="showcase-tag">{{ item.tag }}</span>
+            <h3 class="showcase-title">{{ item.title }}</h3>
+          </div>
+          <span class="showcase-num">0{{ i + 1 }}</span>
+        </div>
+
+        <!-- Center Showcase Image Media -->
+        <div class="showcase-media-box">
+          <img [src]="item.image" [alt]="item.title" class="showcase-img" />
+          <div class="showcase-media-overlay"></div>
+        </div>
+
+        <!-- Description at the BOTTOM of the image -->
+        <div class="showcase-footer">
+          <p class="showcase-desc">{{ item.desc }}</p>
+          <div class="showcase-meta">
+            <span class="meta-location">{{ item.location }}</span>
+            <span class="meta-divider">•</span>
+            <span class="meta-year">{{ item.year }}</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
