@@ -47,6 +47,7 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('servicesSlide') servicesSlideRef?: ElementRef<HTMLElement>;
   @ViewChild('servicesZoomBox') servicesZoomBoxRef?: ElementRef<HTMLElement>;
   @ViewChild('showcaseSection') showcaseSectionRef?: ElementRef<HTMLElement>;
+  @ViewChild('projectsPanel') projectsPanelRef?: ElementRef<HTMLElement>;
 
   private showcaseCtx?: gsap.Context;
   private showcaseTrigger?: ScrollTrigger;
@@ -674,6 +675,7 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
 
     const showcaseSection = this.showcaseSectionRef.nativeElement;
     const cards = gsap.utils.toArray<HTMLElement>(showcaseSection.querySelectorAll('.showcase-card'));
+    const projectsPanel = this.projectsPanelRef?.nativeElement;
 
     if (cards.length === 0) return;
 
@@ -695,6 +697,10 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
         });
       }
 
+      if (projectsPanel) {
+        gsap.set(projectsPanel, { xPercent: 100 });
+      }
+
       const showcaseTl = gsap.timeline({ paused: true });
 
       // Step 1: First image moves from bottom to center, zooms in and expands to full showcase size
@@ -709,8 +715,10 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
       // (Hold window to read Card 0)
 
       // Step 2 & 3: Transitions between sequential images
+      let lastTransitionTime = 0;
       for (let i = 0; i < cards.length - 1; i++) {
         const transitionTime = 1.6 + i * 2.0;
+        lastTransitionTime = transitionTime;
         const d = 1.3;
 
         // Current image moves to top while zooming out, reducing size, and fading
@@ -732,10 +740,32 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
         }, transitionTime);
       }
 
+      // Step 4: After the last image is shown, slide Projects Section in from Right to Left!
+      const lastCardIndex = cards.length - 1;
+      const projectsStartTime = lastTransitionTime + 2.0;
+      const projectsDuration = 1.4;
+
+      // Last image card drifts left and fades
+      showcaseTl.to(cards[lastCardIndex], {
+        xPercent: -35,
+        opacity: 0,
+        duration: projectsDuration,
+        ease: 'power2.inOut',
+      }, projectsStartTime);
+
+      // Full-screen Projects section slides in from right (100% -> 0%)
+      if (projectsPanel) {
+        showcaseTl.to(projectsPanel, {
+          xPercent: 0,
+          duration: projectsDuration,
+          ease: 'power2.inOut',
+        }, projectsStartTime);
+      }
+
       this.showcaseTrigger = ScrollTrigger.create({
         trigger: showcaseSection,
         start: 'top top',
-        end: () => '+=' + window.innerHeight * (cards.length * 1.8),
+        end: () => '+=' + window.innerHeight * 7,
         pin: true,
         scrub: 0.85,
         anticipatePin: 1,
