@@ -1,0 +1,230 @@
+<header class="navbar">
+  <div class="nav-container">
+    <a href="#" class="logo">
+      <svg width="32" height="26" viewBox="0 0 32 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3 15.5L13 4.5L21.5 13.5L30 4.5" stroke="#778663" stroke-width="3.5" stroke-linecap="round"
+          stroke-linejoin="round" />
+        <path d="M8.5 21.5L16.5 13.5L21.5 18.5" stroke="#778663" stroke-width="3" stroke-linecap="round"
+          stroke-linejoin="round" />
+      </svg>
+      <span class="logo-text">Renovast</span>
+    </a>
+
+    <nav class="nav-links">
+      <a href="#" class="nav-item active">
+        Home
+        <svg class="arrow" width="10" height="6" viewBox="0 0 10 6" fill="none">
+          <path d="M1 1.5L5 4.5L9 1.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg>
+      </a>
+      <a href="#" class="nav-item">
+        About Us
+      </a>
+      <a href="#" class="nav-item">
+        Services
+      </a>
+      <a href="#" class="nav-item">
+        Project
+      </a>
+      <a href="#" class="nav-item">
+        Pages
+      </a>
+      <a href="#" class="nav-item">
+        Blog
+      </a>
+      <a href="#" class="nav-item">Contact</a>
+    </nav>
+
+    <div class="nav-actions">
+      <a href="#" class="btn-quote">Get a Quote</a>
+    </div>
+  </div>
+</header>
+
+<section class="scrolly" #scrolly>
+  <div class="stage">
+    <div class="stage-inner" #stageInner>
+      <img class="scene scene-before" src="assets/room-reveal/scene-before.jpg"
+        alt="Dated living room before renovation" />
+      <img class="scene scene-repainted" src="assets/room-reveal/scene-repainted.jpg"
+        alt="Empty room, freshly painted" />
+      <img class="scene scene-after" src="assets/room-reveal/scene-repainted.jpg" alt="Fully renovated living room" />
+
+      <div class="objects-layer objects-old">
+        <img class="obj" src="assets/room-reveal/old-chandelier.png"
+          style="left:45.6%; top:1.4%; width:11.8%; height:21.6%;" alt="Old chandelier" />
+        <img class="obj" src="assets/room-reveal/old-curtains.png"
+          style="left:59.0%; top:20.9%; width:27.7%; height:39.0%;" alt="Old curtains" />
+        <img class="obj" src="assets/room-reveal/old-tv-cabinet.png"
+          style="left:24.5%; top:32.8%; width:21.0%; height:47.3%;" alt="Old TV cabinet" />
+        <img class="obj" src="assets/room-reveal/old-sofa.png" style="left:57.4%; top:59.9%; width:21.7%; height:37.5%;"
+          alt="Old sofa" />
+        <img class="obj" src="assets/room-reveal/old-coffee-table.png"
+          style="left:49.7%; top:73.1%; width:15.0%; height:17.4%;" alt="Old coffee table" />
+        <img class="obj" src="assets/room-reveal/old-armchair.png"
+          style="left:19.1%; top:64.1%; width:19.5%; height:33.4%;" alt="Old armchair" />
+      </div>
+
+      <div class="objects-layer objects-new">
+        <img class="obj" src="assets/room-reveal/new-light-fixture.png"
+          style="left:45.0%; top:16.7%; width:14.1%; height:11.1%;" alt="New light fixture" />
+        <img class="obj" src="assets/room-reveal/new-fireplace.png"
+          style="left:27.4%; top:57.8%; width:17.2%; height:16.0%;" alt="New fireplace" />
+        <img class="obj" src="assets/room-reveal/new-armchairs.png"
+          style="left:19.4%; top:68.9%; width:19.2%; height:19.5%;" alt="New armchairs" />
+        <img class="obj" src="assets/room-reveal/new-sofa.png" style="left:46.9%; top:63.4%; width:32.9%; height:34.8%;"
+          alt="New sofa" />
+        <img class="obj" src="assets/room-reveal/new-coffee-table.png"
+          style="left:40.5%; top:73.1%; width:16.3%; height:11.8%;" alt="New coffee table" />
+      </div>
+
+      <div class="caption" *ngFor="let c of captions; let i = index" [class.active]="activeCaption === i">
+        <span class="tag">{{ c.tag }}</span>
+        <h2>{{ c.title }}</h2>
+      </div>
+
+      <div class="rail">
+        <i *ngFor="let c of captions; let i = index" [class.active]="activeCaption === i"></i>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="about-scrolly" id="about" #aboutSection>
+  <div class="about-stage">
+    <!-- Continuous Horizontal Parallax Track -->
+    <div class="about-horizontal-track" [style.transform]="'translate3d(' + getHorizontalTrackX() + '%, 0, 0)'">
+
+      <!-- 1. Left Section: Main About Container -->
+      <div class="about-container" [class.revealed]="isContainerRevealed()">
+        <div class="about-images">
+          <!-- Primary Image Wrapper with 96-block scroll reveal & magnetic squares -->
+          <div #primaryWrapper class="img-wrapper img-primary group relative overflow-hidden cursor-pointer"
+            (mousemove)="onPrimaryPointerMove($event, primaryWrapper)" (mouseleave)="onPrimaryPointerLeave()">
+            <img src="assets/room-reveal/about-1.jpg" alt="Modern Architecture Renovation Exterior"
+              class="w-full h-full object-cover" />
+
+            <!-- Pixel-Block Viewport Reveal Overlay (96 blocks) -->
+            <div class="absolute inset-0 grid grid-cols-12 grid-rows-8 pointer-events-none z-10">
+              <div *ngFor="let block of pixelBlocks" class="bg-black transition-all duration-700 ease-out"
+                [style.transform]="isPrimaryBlockDissolved(block) ? 'scale(0)' : 'scale(1)'"
+                [style.opacity]="isPrimaryBlockDissolved(block) ? 0 : 1"></div>
+            </div>
+
+            <!-- Magnetic Squares -->
+            <div class="absolute inset-0 pointer-events-none z-15">
+              <div *ngFor="let sq of primarySquares" class="bg-black absolute transition-none" [style.left.%]="sq.x"
+                [style.top.%]="sq.y" [style.width.px]="sq.size" [style.height.px]="sq.size"
+                [style.transform]="'translate3d(' + primaryX + 'px, ' + primaryY + 'px, 0)'"></div>
+            </div>
+
+            <div
+              class="absolute right-4 top-4 z-20 h-7 w-7 flex items-center justify-center border border-white/40 text-xs text-white">
+              +
+            </div>
+          </div>
+
+          <!-- Secondary Image Wrapper with 96-block scroll reveal & magnetic squares -->
+          <div #secondaryWrapper class="img-wrapper img-secondary group relative overflow-hidden cursor-pointer"
+            (mousemove)="onSecondaryPointerMove($event, secondaryWrapper)" (mouseleave)="onSecondaryPointerLeave()">
+            <img src="assets/room-reveal/about-2.jpg" alt="Architectural Wooden Detailing"
+              class="w-full h-full object-cover" />
+
+            <!-- Pixel-Block Viewport Reveal Overlay (96 blocks) -->
+            <div class="absolute inset-0 grid grid-cols-12 grid-rows-8 pointer-events-none z-10">
+              <div *ngFor="let block of pixelBlocks" class="bg-black transition-all duration-700 ease-out"
+                [style.transform]="isSecondaryBlockDissolved(block) ? 'scale(0)' : 'scale(1)'"
+                [style.opacity]="isSecondaryBlockDissolved(block) ? 0 : 1"></div>
+            </div>
+
+            <!-- Magnetic Squares -->
+            <div class="absolute inset-0 pointer-events-none z-15">
+              <div *ngFor="let sq of secondarySquares" class="bg-black absolute transition-none" [style.left.%]="sq.x"
+                [style.top.%]="sq.y" [style.width.px]="sq.size" [style.height.px]="sq.size"
+                [style.transform]="'translate3d(' + secondaryX + 'px, ' + secondaryY + 'px, 0)'"></div>
+            </div>
+
+            <div
+              class="absolute right-4 top-4 z-20 h-7 w-7 flex items-center justify-center border border-white/40 text-xs text-white">
+              +
+            </div>
+          </div>
+        </div>
+
+        <div class="about-content">
+          <span class="eyebrow text-reveal-item" [class.revealed]="isTextRevealed(0.38)">ABOUT RENOVAST</span>
+          <h2 class="title text-reveal-words">
+            <span class="text-reveal-item inline-block" [class.revealed]="isTextRevealed(0.41)">Transforming</span>
+            <span class="text-reveal-item inline-block" [class.revealed]="isTextRevealed(0.44)">Homes</span>
+            <span class="text-reveal-item inline-block" [class.revealed]="isTextRevealed(0.47)">With</span>
+            <span class="text-reveal-item inline-block" [class.revealed]="isTextRevealed(0.50)">Expert</span>
+            <span class="text-reveal-item inline-block" [class.revealed]="isTextRevealed(0.53)">Renovations</span>
+          </h2>
+          <div class="description text-reveal-lines">
+            <span class="text-reveal-item block" [class.revealed]="isTextRevealed(0.55)">
+              We specialize in home renovation, remodeling, and interior improvements
+            </span>
+            <span class="text-reveal-item block" [class.revealed]="isTextRevealed(0.57)">
+              that combine style, functionality, and lasting quality.
+            </span>
+            <span class="text-reveal-item block" [class.revealed]="isTextRevealed(0.59)">
+              From kitchen and bathroom upgrades to complete home transformations,
+            </span>
+            <span class="text-reveal-item block" [class.revealed]="isTextRevealed(0.61)">
+              our experienced team delivers every project with exceptional craftsmanship and attention to detail.
+            </span>
+          </div>
+          <a href="#" class="btn-start text-reveal-item inline-block" [class.revealed]="isTextRevealed(0.64)">Start Your
+            Project</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- USP Architectural Portfolio — Independent pinned section for GSAP card transitions -->
+<section class="usp-scrolly" #uspScrolly>
+  <div class="usp-viewport">
+
+    <!-- Oversized Background Editorial Typography Layer -->
+    <div class="usp-editorial-layer" #editorialLayer>
+      <span class="editorial-word">NORMAL</span>
+      <span class="editorial-word">BORING</span>
+      <span class="editorial-word">ELEGANCE</span>
+      <span class="editorial-word">AUTHENTICITY</span>
+      <span class="editorial-word">FUNCTIONALITY</span>
+    </div>
+
+    <!-- Master Horizontal Project Track (GSAP controls x and child widths) -->
+    <div class="usp-track" #uspTrack>
+
+      <!-- 5 Physical Architectural Project Panels -->
+      <article *ngFor="let item of uspItems; let i = index" class="usp-card" [attr.data-index]="i"
+        [style.background-color]="item.cardBg">
+        <!-- Top: 66vh Image Container -->
+        <div class="usp-card-media">
+          <img [src]="item.image" [alt]="item.title" class="usp-card-img" />
+        </div>
+        <!-- Bottom: 34vh Info Container (clips naturally when card contracts) -->
+        <div class="usp-card-info"
+          [class.light-theme]="item.cardBg === '#F2EDE4' || item.cardBg === '#C7D7E5' || item.cardBg === '#E5DFD5'">
+          <div class="usp-card-inner">
+            <div class="usp-card-meta">
+              <span class="meta-year">{{ item.year }}</span>
+              <span class="meta-location">{{ item.location }}</span>
+            </div>
+            <h4 class="usp-card-heading">{{ item.title }}</h4>
+            <div class="usp-card-footer">
+              <span class="usp-card-num">{{ item.id }}</span>
+              <a href="#" class="btn-project-pill" (click)="$event.preventDefault()">{{ item.buttonText }}</a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+  </div>
+</section>
