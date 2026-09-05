@@ -39,9 +39,13 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('scrolly', { static: true }) scrollyRef!: ElementRef<HTMLElement>;
   @ViewChild('stageInner', { static: true }) stageInnerRef!: ElementRef<HTMLElement>;
   @ViewChild('aboutSection') aboutSectionRef!: ElementRef<HTMLElement>;
-  @ViewChild('uspScrolly') uspScrollyRef?: ElementRef<HTMLElement>;
+  @ViewChild('mainTrack') mainTrackRef?: ElementRef<HTMLElement>;
+  @ViewChild('uspSection') uspSectionRef?: ElementRef<HTMLElement>;
   @ViewChild('uspTrack') uspTrackRef?: ElementRef<HTMLElement>;
   @ViewChild('editorialLayer') editorialLayerRef?: ElementRef<HTMLElement>;
+  @ViewChild('uspFirstSlide') uspFirstSlideRef?: ElementRef<HTMLElement>;
+  @ViewChild('servicesSlide') servicesSlideRef?: ElementRef<HTMLElement>;
+  @ViewChild('servicesZoomBox') servicesZoomBoxRef?: ElementRef<HTMLElement>;
 
   activeCaption = 0;
   captions = [
@@ -170,34 +174,27 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   isPrimaryBlockDissolved(block: PixelBlock): boolean {
-    // Phase 1: Big primary image dissolves open (0.03 to 0.15)
     const progress = this.aboutScrollProgress();
-    if (progress < 0.03) return false;
-    const p = Math.min(Math.max((progress - 0.03) / 0.12, 0), 1);
+    if (progress < 0.01) return false;
+    const p = Math.min(Math.max((progress - 0.01) / 0.06, 0), 1);
     return p >= block.normalizedThreshold;
   }
 
   isSecondaryBlockDissolved(block: PixelBlock): boolean {
-    // Phase 2: Small secondary image dissolves open (0.15 to 0.24)
     const progress = this.aboutScrollProgress();
-    if (progress < 0.15) return false;
-    const p = Math.min(Math.max((progress - 0.15) / 0.09, 0), 1);
+    if (progress < 0.03) return false;
+    const p = Math.min(Math.max((progress - 0.03) / 0.06, 0), 1);
     return p >= block.normalizedThreshold;
   }
 
   isTextRevealed(threshold: number): boolean {
-    // Scaled text reveal so it's fully loaded by progress 0.30
-    const scaled = threshold * 0.45;
+    // Scaled text reveal so it's fully loaded by progress 0.11
+    const scaled = threshold * 0.16;
     return this.aboutScrollProgress() >= scaled;
   }
 
   isUspSectionVisible(): boolean {
-    return this.aboutScrollProgress() >= 0.30;
-  }
-
-  // About section horizontal track — now only handles the about container itself
-  getHorizontalTrackX(): number {
-    return 0;
+    return this.aboutScrollProgress() >= 0.14;
   }
 
   private startMagneticLoop(): void {
@@ -361,20 +358,9 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
         { scale: 1.0, ease: 'none' },
         0
       );
-
-      // About section scroll progress for pixel dissolve + text reveal
-      ScrollTrigger.create({
-        trigger: this.aboutSectionRef.nativeElement,
-        start: 'top top',
-        end: 'bottom bottom',
-        scrub: 0.5,
-        onUpdate: (self) => {
-          this.aboutScrollProgress.set(self.progress);
-        },
-      });
     }
 
-    // Initialize the USP portfolio section with independent ScrollTrigger
+    // Initialize the unified About & USP portfolio section with master ScrollTrigger
     this.initUspScrollTrigger();
 
     // Trigger initial scroll calculation
@@ -382,25 +368,31 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /**
-   * Independent GSAP ScrollTrigger for the USP Portfolio section.
-   * Pins the section and scrubs a master timeline that expands/contracts cards
-   * exactly like the reference GSAP demo — one card grows from ~10vw to ~53vw
-   * while the active card shrinks from ~53vw to ~10vw, with the track shifting
-   * left to keep the active card at ~5% viewport left margin.
+   * Continuous Master GSAP ScrollTrigger for About -> USP Intro -> Project Cards.
+   * 1. About section pixel dissolve & text reveal in early scroll (progress 0.00 -> 0.12).
+   * 2. Right-to-left slide (mainTrack 0 -> -100vw) brings USP panel into viewport.
+   * 3. Centered WHY CHOOSE US intro slide with heading and description.
+   * 4. Intro slide exits left as Card 01 expands to active ~53vw at 5% left margin.
+   * 5. Expanding/contracting card accordion across all 5 project cards.
    */
   private initUspScrollTrigger(): void {
-    if (!this.uspScrollyRef || !this.uspTrackRef) return;
+    if (!this.aboutSectionRef || !this.mainTrackRef || !this.uspTrackRef) return;
 
-    const section = this.uspScrollyRef.nativeElement;
-    const track = this.uspTrackRef.nativeElement;
-    const cards = gsap.utils.toArray<HTMLElement>(track.querySelectorAll('.usp-card'));
-    const images = gsap.utils.toArray<HTMLElement>(track.querySelectorAll('.usp-card-img'));
+    const aboutSection = this.aboutSectionRef.nativeElement;
+    const mainTrack = this.mainTrackRef.nativeElement;
+    const uspTrack = this.uspTrackRef.nativeElement;
+    const cards = gsap.utils.toArray<HTMLElement>(uspTrack.querySelectorAll('.usp-card'));
+    const images = gsap.utils.toArray<HTMLElement>(uspTrack.querySelectorAll('.usp-card-img'));
     const editorial = this.editorialLayerRef?.nativeElement;
+    const firstSlide = this.uspFirstSlideRef?.nativeElement;
+    const servicesSlide = this.servicesSlideRef?.nativeElement;
+    const servicesZoomBox = this.servicesZoomBoxRef?.nativeElement;
 
     if (cards.length === 0) return;
 
     this.uspCtx = gsap.context(() => {
-      // Responsive geometry matching the reference demo
+      const getVw = () => window.innerWidth;
+
       const getActiveWidth = () => {
         const vw = window.innerWidth;
         return Math.max(620, Math.min(vw * 0.53, 1050));
@@ -411,26 +403,51 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
         return Math.max(105, Math.min(vw * 0.105, 190));
       };
 
-      // Keep the active card beginning at approximately 5% viewport width
+      const getMargin = () => window.innerWidth * 0.05;
+      const getSlide1Width = () => window.innerWidth;
+
+      // Keep active card beginning at approximately 5% viewport width
+      // Inside uspTrack: first child is firstSlide (width 100vw).
+      // Preceding contracted cards have width getInactiveWidth().
       const getTargetX = (cardIndex: number) => {
-        let x = window.innerWidth * 0.05;
+        let x = getMargin() - getSlide1Width();
         for (let i = 0; i < cardIndex; i++) {
           x -= getInactiveWidth();
         }
         return x;
       };
 
-      // Set initial geometry: Card 0 is active (expanded), rest are inactive (narrow)
+      const getServicesTargetX = () => {
+        return -(getSlide1Width() + cards.length * getInactiveWidth());
+      };
+
+      // Set initial geometry:
+      gsap.set(mainTrack, { x: 0 });
+      gsap.set(uspTrack, { x: 0 });
+
+      if (firstSlide) {
+        gsap.set(firstSlide, { width: () => getSlide1Width() });
+      }
+
+      if (servicesSlide) {
+        gsap.set(servicesSlide, { width: () => getVw() });
+      }
+
+      if (servicesZoomBox) {
+        gsap.set(servicesZoomBox, {
+          scale: 0.45,
+          borderRadius: 36,
+          boxShadow: '0 30px 90px rgba(0, 0, 0, 0.5)',
+          border: '1px solid rgba(255, 255, 255, 0.12)',
+        });
+      }
+
       cards.forEach((card, i) => {
         gsap.set(card, {
           width: i === 0 ? getActiveWidth() : getInactiveWidth(),
         });
       });
 
-      // Set initial track position
-      gsap.set(track, { x: getTargetX(0) });
-
-      // Set initial image transforms
       images.forEach((img, i) => {
         gsap.set(img, {
           scale: i === 0 ? 1.0 : 1.065,
@@ -438,44 +455,75 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
         });
       });
 
-      // Build master timeline (paused, scrubbed by ScrollTrigger progress)
+      if (editorial) {
+        gsap.set(editorial, { x: 0, opacity: 1 });
+      }
+
+      // Master Timeline (paused, scrubbed by ScrollTrigger)
       const masterTl = gsap.timeline({ paused: true });
 
-      // Set initial state at time 0
+      // Initial state at time 0
+      masterTl.set(mainTrack, { x: 0 }, 0);
+      masterTl.set(uspTrack, { x: 0 }, 0);
       cards.forEach((card, i) => {
         masterTl.set(card, {
           width: i === 0 ? getActiveWidth() : getInactiveWidth(),
         }, 0);
       });
-      masterTl.set(track, { x: getTargetX(0) }, 0);
 
-      // Build transitions: card[i] contracts → card[i+1] expands
+      // 1. Right-to-Left Slide: About panel slides out left, USP panel enters from right
+      // Time 1.0 -> 2.2
+      masterTl.to(mainTrack, {
+        x: () => -getVw(),
+        duration: 1.2,
+        ease: 'power2.inOut',
+      }, 1.0);
+
+      // (Time 2.2 -> 3.2 is reading window for USP Intro: WHY CHOOSE US & description)
+
+      // 2. Intro Slide exits left, Card 01 becomes active dominant at 5% margin
+      // Time 3.2 -> 4.2
+      masterTl.to(uspTrack, {
+        x: () => getTargetX(0),
+        duration: 1.0,
+        ease: 'power3.inOut',
+      }, 3.2);
+
+      if (editorial) {
+        masterTl.to(editorial, {
+          x: () => -getVw() * 0.03,
+          duration: 1.0,
+          ease: 'power2.inOut',
+        }, 3.2);
+      }
+
+      // 3. Card accordion transitions (Card 0 -> 1 -> 2 -> 3 -> 4)
       for (let i = 0; i < cards.length - 1; i++) {
-        const time = i; // Each transition occupies 1 unit of time
-        const d = 1;
+        const time = 4.2 + i * 0.9;
+        const d = 0.9;
 
-        // A) Current card contracts from active → inactive width
+        // Current card contracts
         masterTl.to(cards[i], {
           width: () => getInactiveWidth(),
           duration: d,
           ease: 'power3.inOut',
         }, time);
 
-        // B) Next card expands from inactive → active width
+        // Next card expands
         masterTl.to(cards[i + 1], {
           width: () => getActiveWidth(),
           duration: d,
           ease: 'power3.inOut',
         }, time);
 
-        // C) Track translates to keep new active card at 5% left margin
-        masterTl.to(track, {
+        // Track translates to keep next active card at 5% left margin
+        masterTl.to(uspTrack, {
           x: () => getTargetX(i + 1),
           duration: d,
           ease: 'power3.inOut',
         }, time);
 
-        // D) Next image settles from zoomed/offset → normal as card opens
+        // Next image settles into active depth
         masterTl.fromTo(images[i + 1],
           {
             scale: 1.065,
@@ -490,7 +538,7 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
           time
         );
 
-        // E) Current image drifts as it becomes a side card
+        // Current image drifts as it becomes side card
         masterTl.to(images[i], {
           scale: 1.065,
           xPercent: i % 2 ? -3 : 3,
@@ -498,31 +546,82 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
           ease: 'power2.inOut',
         }, time);
 
-        // F) Editorial background typography moves at a slower rate
+        // Editorial typography shifts at slower rate
         if (editorial) {
           masterTl.to(editorial, {
-            x: () => -(i + 1) * window.innerWidth * 0.075,
+            x: () => -(i + 1) * getVw() * 0.075,
             duration: d,
             ease: 'power2.inOut',
           }, time);
         }
       }
 
-      // Create independent ScrollTrigger — pins the USP section and scrubs the timeline
+      // 4. Services Slide: After last project card (POL43), Services Section enters from right as a compact container
+      const lastIndex = cards.length - 1;
+      const servicesStartTime = 4.2 + (cards.length - 1) * 0.9 + 0.2;
+      const servicesDuration = 1.2;
+
+      // Last project card contracts
+      masterTl.to(cards[lastIndex], {
+        width: () => getInactiveWidth(),
+        duration: servicesDuration,
+        ease: 'power3.inOut',
+      }, servicesStartTime);
+
+      masterTl.to(images[lastIndex], {
+        scale: 1.065,
+        xPercent: -3,
+        duration: servicesDuration,
+        ease: 'power2.inOut',
+      }, servicesStartTime);
+
+      // Track translates to bring Services slide into view
+      masterTl.to(uspTrack, {
+        x: () => getServicesTargetX(),
+        duration: servicesDuration,
+        ease: 'power3.inOut',
+      }, servicesStartTime);
+
+      if (editorial) {
+        masterTl.to(editorial, {
+          x: () => -getVw() * 0.45,
+          opacity: 0,
+          duration: servicesDuration,
+          ease: 'power2.inOut',
+        }, servicesStartTime);
+      }
+
+      // 5. Zoom In: According to scrolling, zoom in the services container to fill the entire screen!
+      const zoomStartTime = servicesStartTime + servicesDuration + 0.15;
+      const zoomDuration = 1.4;
+
+      if (servicesZoomBox) {
+        masterTl.to(servicesZoomBox, {
+          scale: 1.0,
+          borderRadius: 0,
+          boxShadow: '0 0 0 rgba(0, 0, 0, 0)',
+          border: '0px solid rgba(255, 255, 255, 0)',
+          duration: zoomDuration,
+          ease: 'power2.inOut',
+        }, zoomStartTime);
+      }
+
+      // Single Unified ScrollTrigger on About/USP pinned section
       this.uspTrigger = ScrollTrigger.create({
-        trigger: section,
+        trigger: aboutSection,
         start: 'top top',
-        end: () => '+=' + window.innerHeight * (cards.length + 1),
+        end: () => '+=' + window.innerHeight * 8.5,
         pin: true,
         scrub: 0.85,
         anticipatePin: 1,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
+          this.aboutScrollProgress.set(self.progress);
           masterTl.progress(self.progress);
         },
       });
 
-    }, section);
+    }, aboutSection);
   }
 
   ngOnDestroy(): void {

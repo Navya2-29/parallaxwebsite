@@ -225,13 +225,13 @@
 
 .about-scrolly {
   position: relative;
-  height: 400vh;
+  height: 100vh;
+  width: 100%;
   background: #ffffff;
   z-index: 10;
 
   .about-stage {
-    position: sticky;
-    top: 0;
+    position: relative;
     height: 100vh;
     width: 100%;
     display: flex;
@@ -239,25 +239,33 @@
     overflow: hidden;
   }
 
-  .about-horizontal-track {
+  .main-horizontal-track {
     display: flex;
     align-items: center;
-    width: max-content;
+    width: 200vw;
     height: 100%;
     will-change: transform;
-    transition: transform 0.1s linear;
-    padding-left: 6vw;
+  }
+
+  .about-panel {
+    width: 100vw;
+    height: 100%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    box-sizing: border-box;
+    padding: 0 6vw;
   }
 
   .about-container {
-    width: 88vw;
+    width: 100%;
     max-width: 1280px;
-    flex-shrink: 0;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 80px;
     align-items: center;
-    margin-right: 8vw;
     opacity: 0;
     transform: translateY(32px) scale(0.96);
     transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
@@ -268,214 +276,417 @@
       transform: translateY(0) scale(1);
     }
   }
-}
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   USP Architectural Portfolio — Independent pinned section
-   GSAP controls .usp-track x-position and .usp-card widths directly.
-   ═══════════════════════════════════════════════════════════════════════════ */
-.usp-scrolly {
-  position: relative;
-  /* ScrollTrigger will pin this and create virtual scroll distance */
-  background: #cbdceb;
-  z-index: 10;
-}
-
-.usp-viewport {
-  position: relative;
-  width: 100%;
-  height: 100vh;
-  overflow: hidden;
-}
-
-/* Oversized Background Editorial Typography Layer */
-.usp-editorial-layer {
-  position: absolute;
-  top: 50%;
-  left: 6vw;
-  transform: translateY(-50%);
-  display: flex;
-  gap: 12vw;
-  z-index: 0;
-  pointer-events: none;
-  white-space: nowrap;
-  will-change: transform;
-
-  .editorial-word {
-    font-family: 'Bodoni Moda', 'Playfair Display', Georgia, serif;
-    font-size: clamp(140px, 18vw, 360px);
-    font-weight: 700;
-    letter-spacing: -0.075em;
-    color: rgba(26, 34, 40, 0.06);
-    line-height: 0.72;
-    text-transform: uppercase;
-    user-select: none;
-  }
-}
-
-/* Master Horizontal Project Track — GSAP positions this via x transform */
-.usp-track {
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 100%;
-  display: flex;
-  align-items: stretch;
-  z-index: 2;
-  will-change: transform;
-}
-
-/* Individual Project Card Panels */
-.usp-card {
-  position: relative;
-  flex: 0 0 auto;
-  height: 100%;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  will-change: width;
-  box-sizing: border-box;
-  border-right: 1px solid rgba(0, 0, 0, 0.06);
-
-  /* Top: 66% viewport height Image Container */
-  .usp-card-media {
-    height: 66%;
-    width: 100%;
+  .usp-section-panel {
+    width: 100vw;
+    height: 100%;
+    flex-shrink: 0;
     position: relative;
     overflow: hidden;
-    background: #111;
+    background: #cbdceb;
 
-    .usp-card-img {
+    /* Fixed Viewport Editorial UI */
+    .fixed-editorial-menu {
       position: absolute;
-      top: -6%;
-      left: -6%;
-      width: 112%;
-      height: 112%;
-      object-fit: cover;
-      object-position: center;
-      will-change: transform;
-      transform: translate3d(0, 0, 0) scale(1.05);
-    }
-  }
+      top: 32px;
+      right: 48px;
+      z-index: 100;
+      background: #1a2228;
+      color: #ffffff;
+      padding: 10px 24px;
+      border-radius: 40px;
+      font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      cursor: pointer;
+      transition: transform 0.25s ease, background 0.25s ease;
 
-  /* Bottom: 34% viewport height Info Container */
-  .usp-card-info {
-    height: 34%;
-    width: 100%;
-    position: relative;
-    overflow: hidden;
-    color: #ffffff;
-    white-space: nowrap;
-
-    &.light-theme {
-      color: #1a2228;
-
-      .usp-card-meta {
-        color: rgba(26, 34, 40, 0.7);
-      }
-
-      .usp-card-heading {
-        color: #1a2228;
-      }
-
-      .usp-card-num {
-        color: rgba(26, 34, 40, 0.6);
-      }
-
-      .btn-project-pill {
-        color: #1a2228;
-        border-color: rgba(26, 34, 40, 0.6);
-
-        &:hover {
-          background: #1a2228;
-          color: #ffffff;
-          border-color: #1a2228;
-        }
+      &:hover {
+        transform: scale(1.05);
+        background: #000000;
       }
     }
 
-    /* Fixed-width inner coords so text clips naturally when card contracts */
-    .usp-card-inner {
-      width: 53vw;
-      min-width: 53vw;
-      height: 100%;
-      padding: clamp(18px, 2.2vw, 32px) clamp(24px, 3.2vw, 48px);
+    .fixed-sotd-badge {
+      position: absolute;
+      top: 50%;
+      right: 0;
+      transform: translateY(-50%);
+      z-index: 100;
+      background: #e7362b;
+      color: #ffffff;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 8px;
+      border-radius: 4px 0 0 4px;
+      cursor: pointer;
+      box-shadow: -2px 4px 16px rgba(231, 54, 43, 0.35);
+
+      .w-logo {
+        font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
+        font-weight: 800;
+        font-size: 15px;
+        line-height: 1;
+      }
+
+      .badge-text {
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+        font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
+        font-size: 10px;
+        letter-spacing: 0.12em;
+        font-weight: 700;
+        text-transform: uppercase;
+        margin-top: 8px;
+        white-space: nowrap;
+      }
+    }
+
+    /* Oversized Background Editorial Typography Layer */
+    .usp-editorial-layer {
+      position: absolute;
+      top: 50%;
+      left: 6vw;
+      transform: translateY(-50%);
+      display: flex;
+      gap: 12vw;
+      z-index: 1;
+      pointer-events: none;
+      white-space: nowrap;
+      will-change: transform;
+
+      .editorial-word {
+        font-family: 'Bodoni Moda', 'Playfair Display', Georgia, serif;
+        font-size: clamp(140px, 18vw, 360px);
+        font-weight: 700;
+        letter-spacing: -0.075em;
+        color: rgba(26, 34, 40, 0.06);
+        line-height: 0.72;
+        text-transform: uppercase;
+        user-select: none;
+      }
+    }
+
+    /* Master Horizontal Project Track inside USP Panel */
+    .usp-full-track {
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      display: flex;
+      align-items: stretch;
+      z-index: 2;
+      will-change: transform;
+    }
+
+    /* SLIDE 1: Centered WHY CHOOSE US Intro Slide */
+    .usp-first-slide {
+      width: 100vw;
+      height: 100%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 8vw;
+      text-align: center;
       box-sizing: border-box;
 
-      .usp-card-meta {
+      .usp-intro-centered {
         display: flex;
-        justify-content: space-between;
+        flex-direction: column;
         align-items: center;
-        font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
-        font-size: clamp(11px, 0.9vw, 14px);
-        font-weight: 600;
-        letter-spacing: 0.15em;
-        color: rgba(255, 255, 255, 0.75);
-        text-transform: uppercase;
-        white-space: nowrap;
-      }
+        justify-content: center;
+        max-width: 840px;
 
-      .usp-card-heading {
-        font-family: 'Bodoni Moda', 'Playfair Display', Georgia, serif;
-        font-size: clamp(26px, 3.2vw, 64px);
-        font-weight: 400;
-        line-height: 1.1;
-        letter-spacing: -0.055em;
-        color: #ffffff;
-        text-transform: uppercase;
-        text-align: center;
-        margin: 6px 0;
-        white-space: nowrap;
-      }
-
-      .usp-card-footer {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-end;
-        white-space: nowrap;
-
-        .usp-card-num {
+        .usp-eyebrow {
           font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
-          font-size: clamp(12px, 1vw, 16px);
-          font-weight: 600;
-          color: rgba(255, 255, 255, 0.7);
-          flex-shrink: 0;
+          font-size: 14px;
+          font-weight: 700;
+          letter-spacing: 0.25em;
+          color: #526370;
+          display: block;
+          margin-bottom: 20px;
+          text-transform: uppercase;
         }
 
-        .btn-project-pill {
-          display: inline-flex;
-          align-items: center;
-          padding: 9px 18px;
-          border: 1px solid rgba(255, 255, 255, 0.5);
-          border-radius: 999px;
-          font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
-          font-size: clamp(11px, 0.85vw, 13px);
-          font-weight: 500;
-          color: #ffffff;
-          text-decoration: none;
-          flex-shrink: 0;
-          background: transparent;
-          cursor: pointer;
-          transition: all 0.3s ease;
+        .usp-heading {
+          font-family: 'Bodoni Moda', 'Playfair Display', Georgia, serif;
+          font-size: clamp(44px, 5.2vw, 80px);
+          font-weight: 400;
+          line-height: 1.05;
+          letter-spacing: -0.02em;
+          color: #1a2228;
+          margin: 0 0 28px 0;
+          text-transform: uppercase;
 
-          &:hover {
-            background: #ffffff;
-            color: #1a2228;
-            border-color: #ffffff;
+          .asterisk {
+            color: #4a5c68;
+            font-weight: 300;
+            font-size: 0.85em;
+          }
+        }
+
+        .usp-main-desc {
+          font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
+          font-size: clamp(16px, 1.35vw, 20px);
+          line-height: 1.85;
+          color: #3b4852;
+          max-width: 700px;
+          margin: 0 auto 36px auto;
+        }
+
+        .scroll-indicator {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          .mouse-icon {
+            animation: mouseBounce 1.8s infinite ease-in-out;
           }
         }
       }
     }
-  }
 
-  /* Per-card info background colors */
-  &:nth-child(2) .usp-card-info { background: #616668; }
-  &:nth-child(3) .usp-card-info { background: #C7D7E5; }
-  &:nth-child(4) .usp-card-info { background: #E5DFD5; }
-  &:nth-child(5) .usp-card-info { background: #3E4244; }
+    /* Individual Project Card Panels */
+    .usp-card {
+      position: relative;
+      flex: 0 0 auto;
+      height: 100%;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      will-change: width;
+      box-sizing: border-box;
+      border-right: 1px solid rgba(0, 0, 0, 0.06);
+
+      /* Top: 66% viewport height Image Container */
+      .usp-card-media {
+        height: 66%;
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+        background: #111;
+
+        .usp-card-img {
+          position: absolute;
+          top: -6%;
+          left: -6%;
+          width: 112%;
+          height: 112%;
+          object-fit: cover;
+          object-position: center;
+          will-change: transform;
+          transform: translate3d(0, 0, 0) scale(1.05);
+        }
+      }
+
+      /* Bottom: 34% viewport height Info Container */
+      .usp-card-info {
+        height: 34%;
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+        color: #ffffff;
+        white-space: nowrap;
+
+        &.light-theme {
+          color: #1a2228;
+
+          .usp-card-meta {
+            color: rgba(26, 34, 40, 0.7);
+          }
+
+          .usp-card-heading {
+            color: #1a2228;
+          }
+
+          .usp-card-num {
+            color: rgba(26, 34, 40, 0.6);
+          }
+
+          .btn-project-pill {
+            color: #1a2228;
+            border-color: rgba(26, 34, 40, 0.6);
+
+            &:hover {
+              background: #1a2228;
+              color: #ffffff;
+              border-color: #1a2228;
+            }
+          }
+        }
+
+        /* Fixed-width inner coords so text clips naturally when card contracts */
+        .usp-card-inner {
+          width: 53vw;
+          min-width: 53vw;
+          height: 100%;
+          padding: clamp(18px, 2.2vw, 32px) clamp(24px, 3.2vw, 48px);
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          box-sizing: border-box;
+
+          .usp-card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
+            font-size: clamp(11px, 0.9vw, 14px);
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            white-space: nowrap;
+          }
+
+          .usp-card-heading {
+            font-family: 'Bodoni Moda', 'Playfair Display', Georgia, serif;
+            font-size: clamp(26px, 3.2vw, 64px);
+            font-weight: 400;
+            line-height: 1.1;
+            letter-spacing: -0.055em;
+            color: #ffffff;
+            text-transform: uppercase;
+            text-align: center;
+            margin: 6px 0;
+            white-space: nowrap;
+          }
+
+          .usp-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            white-space: nowrap;
+
+            .usp-card-num {
+              font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
+              font-size: clamp(12px, 1vw, 16px);
+              font-weight: 600;
+              color: rgba(255, 255, 255, 0.7);
+              flex-shrink: 0;
+            }
+
+            .btn-project-pill {
+              display: inline-flex;
+              align-items: center;
+              padding: 9px 18px;
+              border: 1px solid rgba(255, 255, 255, 0.5);
+              border-radius: 999px;
+              font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
+              font-size: clamp(11px, 0.85vw, 13px);
+              font-weight: 500;
+              color: #ffffff;
+              text-decoration: none;
+              flex-shrink: 0;
+              background: transparent;
+              cursor: pointer;
+              transition: all 0.3s ease;
+
+              &:hover {
+                background: #ffffff;
+                color: #1a2228;
+                border-color: #ffffff;
+              }
+            }
+          }
+        }
+      }
+
+      /* Per-card info background colors */
+      &:nth-child(2) .usp-card-info { background: #616668; }
+      &:nth-child(3) .usp-card-info { background: #C7D7E5; }
+      &:nth-child(4) .usp-card-info { background: #E5DFD5; }
+      &:nth-child(5) .usp-card-info { background: #3E4244; }
+    }
+
+    /* SLIDE 3: Services Section Slide (Small container that zooms in to fill entire screen) */
+    .services-slide {
+      width: 100vw;
+      height: 100%;
+      flex-shrink: 0;
+      box-sizing: border-box;
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+
+      .services-zoom-box {
+        width: 100vw;
+        height: 100%;
+        box-sizing: border-box;
+        background: linear-gradient(150deg, #182026 0%, #0e1215 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: clamp(24px, 5vh, 60px) clamp(24px, 6vw, 80px);
+        transform-origin: center center;
+        will-change: transform, border-radius, box-shadow;
+        overflow: hidden;
+      }
+
+      .services-centered-content {
+        max-width: 860px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        .services-eyebrow {
+          font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
+          font-size: clamp(12px, 1.05vw, 15px);
+          font-weight: 700;
+          letter-spacing: 0.25em;
+          color: #a9884f;
+          display: block;
+          margin-bottom: 20px;
+          text-transform: uppercase;
+        }
+
+        .services-heading {
+          font-family: 'Bodoni Moda', 'Playfair Display', Georgia, serif;
+          font-size: clamp(38px, 5vw, 76px);
+          font-weight: 400;
+          line-height: 1.05;
+          letter-spacing: -0.02em;
+          color: #ffffff;
+          margin: 0 0 24px 0;
+          text-transform: uppercase;
+
+          .asterisk {
+            color: #a9884f;
+            font-weight: 300;
+            font-size: 0.85em;
+          }
+        }
+
+        .services-lead {
+          font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
+          font-size: clamp(15px, 1.3vw, 20px);
+          line-height: 1.85;
+          color: rgba(255, 255, 255, 0.78);
+          max-width: 740px;
+          margin: 0 auto;
+        }
+      }
+    }
+  }
+}
+
+@keyframes mouseBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(6px);
+  }
 }
 
 .about-images {
