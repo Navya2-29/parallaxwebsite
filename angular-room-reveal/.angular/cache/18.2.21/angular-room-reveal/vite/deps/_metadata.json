@@ -1,55 +1,61 @@
 {
-  "hash": "e113aa0c",
-  "configHash": "8d6abbff",
+  "hash": "9f269f90",
+  "configHash": "878ccd43",
   "lockfileHash": "7f52cc21",
-  "browserHash": "92e330cf",
+  "browserHash": "24ea2864",
   "optimized": {
     "@angular/common": {
       "src": "../../../../../../node_modules/@angular/common/fesm2022/common.mjs",
       "file": "@angular_common.js",
-      "fileHash": "6f12a8cf",
+      "fileHash": "5e4174fe",
       "needsInterop": false
     },
     "@angular/core": {
       "src": "../../../../../../node_modules/@angular/core/fesm2022/core.mjs",
       "file": "@angular_core.js",
-      "fileHash": "e578b018",
+      "fileHash": "9d773378",
       "needsInterop": false
     },
     "@angular/platform-browser": {
       "src": "../../../../../../node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs",
       "file": "@angular_platform-browser.js",
-      "fileHash": "63176948",
+      "fileHash": "b28cc6d2",
       "needsInterop": false
     },
     "@angular/platform-browser/animations": {
       "src": "../../../../../../node_modules/@angular/platform-browser/fesm2022/animations.mjs",
       "file": "@angular_platform-browser_animations.js",
-      "fileHash": "66121886",
+      "fileHash": "a7cb80cb",
       "needsInterop": false
     },
     "gsap": {
       "src": "../../../../../../node_modules/gsap/index.js",
       "file": "gsap.js",
-      "fileHash": "d8ea1b51",
+      "fileHash": "057dfa2b",
       "needsInterop": false
     },
     "gsap/ScrollTrigger": {
       "src": "../../../../../../node_modules/gsap/ScrollTrigger.js",
       "file": "gsap_ScrollTrigger.js",
-      "fileHash": "3883af16",
+      "fileHash": "6f434ea0",
+      "needsInterop": false
+    },
+    "@angular/forms": {
+      "src": "../../../../../../node_modules/@angular/forms/fesm2022/forms.mjs",
+      "file": "@angular_forms.js",
+      "fileHash": "8e41fe70",
       "needsInterop": false
     }
   },
   "chunks": {
-    "chunk-FH5TYOOL": {
-      "file": "chunk-FH5TYOOL.js"
+    "chunk-567VAVTE": {
+      "file": "chunk-567VAVTE.js"
     },
-    "chunk-ALATKUPO": {
-      "file": "chunk-ALATKUPO.js"
+    "chunk-JW3Y5K62": {
+      "file": "chunk-JW3Y5K62.js"
     },
-    "chunk-KIXIL7HX": {
-      "file": "chunk-KIXIL7HX.js"
+    "chunk-JJLM6O2V": {
+      "file": "chunk-JJLM6O2V.js"
     },
     "chunk-WDMUDEB6": {
       "file": "chunk-WDMUDEB6.js"

@@ -9,6 +9,7 @@ import {
   signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -66,7 +67,7 @@ export interface ReviewItem {
 @Component({
   selector: 'app-room-reveal',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './room-reveal.component.html',
   styleUrls: ['./room-reveal.component.scss'],
 })
@@ -90,6 +91,19 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('reviewSection') reviewSectionRef?: ElementRef<HTMLElement>;
   @ViewChild('reviewZoomBox') reviewZoomBoxRef?: ElementRef<HTMLElement>;
   @ViewChild('reviewWhiteBackdrop') reviewWhiteBackdropRef?: ElementRef<HTMLElement>;
+  @ViewChild('enquirySection') enquirySectionRef?: ElementRef<HTMLElement>;
+  @ViewChild('enquiryZoomBox') enquiryZoomBoxRef?: ElementRef<HTMLElement>;
+
+  // Enquiry / Project Contact Form Model matching screenshot
+  enquiryForm = {
+    fullName: '',
+    email: '',
+    phone: '',
+    service: '',
+    projectType: '',
+    location: '',
+    projectScale: '',
+  };
 
   private showcaseCtx?: gsap.Context;
   private showcaseTrigger?: ScrollTrigger;
@@ -915,6 +929,8 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
     const reviewSection = this.reviewSectionRef?.nativeElement;
     const reviewZoomBox = this.reviewZoomBoxRef?.nativeElement;
     const reviewWhiteBackdrop = this.reviewWhiteBackdropRef?.nativeElement;
+    const enquirySection = this.enquirySectionRef?.nativeElement;
+    const enquiryZoomBox = this.enquiryZoomBoxRef?.nativeElement;
 
     if (cards.length === 0) return;
 
@@ -978,6 +994,20 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
           borderRadius: 36,
           opacity: 0,
           boxShadow: '0 20px 60px rgba(0, 0, 0, 0.15)',
+        });
+      }
+
+      // Initial state for enquiry section (starts small width)
+      if (enquirySection) {
+        gsap.set(enquirySection, { opacity: 0, pointerEvents: 'none' });
+      }
+      if (enquiryZoomBox) {
+        gsap.set(enquiryZoomBox, {
+          yPercent: 75,
+          scale: 0.38,
+          borderRadius: 44,
+          opacity: 0,
+          boxShadow: '0 30px 90px rgba(0, 0, 0, 0.25)',
         });
       }
 
@@ -1250,18 +1280,66 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
         }, reviewZoomInStartTime);
       }
 
-      // Step 10: Smooth reading and auto-panning through reviews on continued scroll
-      const reviewHoldStartTime = reviewZoomInStartTime + reviewZoomInDuration + 0.4;
+      // Step 10: Smooth reading of reviews
+      const reviewHoldStartTime = reviewZoomInStartTime + reviewZoomInDuration + 0.3;
       showcaseTl.call(() => this.activeReviewIndex.set(0), undefined, reviewHoldStartTime);
-      showcaseTl.call(() => this.activeReviewIndex.set(1), undefined, reviewHoldStartTime + 1.3);
-      showcaseTl.call(() => this.activeReviewIndex.set(2), undefined, reviewHoldStartTime + 2.6);
-      showcaseTl.call(() => this.activeReviewIndex.set(3), undefined, reviewHoldStartTime + 3.9);
-      showcaseTl.call(() => this.activeReviewIndex.set(4), undefined, reviewHoldStartTime + 5.2);
+      showcaseTl.call(() => this.activeReviewIndex.set(1), undefined, reviewHoldStartTime + 0.9);
+      showcaseTl.call(() => this.activeReviewIndex.set(2), undefined, reviewHoldStartTime + 1.8);
+
+      // Step 11: Enquiry Section shows up from bottom to top while increasing size to fill screen
+      const enquiryStartTime = reviewHoldStartTime + 2.4;
+      const enquiryDuration = 2.4;
+
+      if (reviewSection) {
+        showcaseTl.to(reviewSection, {
+          yPercent: -40,
+          scale: 0.85,
+          opacity: 0,
+          pointerEvents: 'none',
+          duration: enquiryDuration * 0.8,
+          ease: 'power2.inOut',
+        }, enquiryStartTime);
+      }
+
+      if (enquirySection) {
+        showcaseTl.fromTo(enquirySection,
+          { opacity: 0, pointerEvents: 'none' },
+          {
+            opacity: 1,
+            pointerEvents: 'auto',
+            duration: 0.4,
+            ease: 'none',
+          },
+          enquiryStartTime
+        );
+      }
+
+      if (enquiryZoomBox) {
+        showcaseTl.fromTo(enquiryZoomBox,
+          {
+            yPercent: 75,
+            scale: 0.38,
+            borderRadius: 44,
+            opacity: 0.2,
+            boxShadow: '0 30px 90px rgba(0, 0, 0, 0.25)',
+          },
+          {
+            yPercent: 0,
+            scale: 1.0,
+            borderRadius: 0,
+            opacity: 1,
+            boxShadow: '0 0 0 rgba(0, 0, 0, 0)',
+            duration: enquiryDuration,
+            ease: 'power2.out',
+          },
+          enquiryStartTime
+        );
+      }
 
       this.showcaseTrigger = ScrollTrigger.create({
         trigger: showcaseSection,
         start: 'top top',
-        end: () => '+=' + window.innerHeight * (8 + (projectPages.length || 4) * 2.2 + 24.0),
+        end: () => '+=' + window.innerHeight * (8 + (projectPages.length || 4) * 2.2 + 28.0),
         pin: true,
         scrub: 0.85,
         anticipatePin: 1,
@@ -1272,6 +1350,10 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
       });
 
     }, showcaseSection);
+  }
+
+  scrollToTop(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   ngOnDestroy(): void {
