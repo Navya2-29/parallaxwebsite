@@ -515,13 +515,88 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
     this.secondaryTargetY = 0;
   }
 
+  activeNav = signal('home');
+
   private tl?: gsap.core.Timeline;
   private trigger?: ScrollTrigger;
   private aboutTl?: gsap.core.Timeline;
   private uspCtx?: gsap.Context;
   private uspTrigger?: ScrollTrigger;
+  private masterTl?: gsap.core.Timeline;
+  private showcaseTl?: gsap.core.Timeline;
+
+  // Continuous Silky Smooth Momentum Scroll Engine
+  private currentScrollY = 0;
+  private targetScrollY = 0;
+  private isMomentumScrolling = false;
+  private momentumRafId?: number;
+  private boundWheelHandler?: (e: WheelEvent) => void;
+  private boundKeyHandler?: (e: KeyboardEvent) => void;
+
+  private initContinuousSmoothScroll(): void {
+    if (typeof window === 'undefined') return;
+
+    this.currentScrollY = window.scrollY || window.pageYOffset || 0;
+    this.targetScrollY = this.currentScrollY;
+
+    this.boundWheelHandler = (e: WheelEvent) => {
+      // Intercept wheel with gentle multiplier for slow, majestic parallax drift
+      e.preventDefault();
+      const maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+      const delta = e.deltaY;
+      this.targetScrollY = Math.min(Math.max(0, this.targetScrollY + delta * 0.42), maxScroll);
+
+      if (!this.isMomentumScrolling) {
+        this.isMomentumScrolling = true;
+        this.runMomentumLoop();
+      }
+    };
+
+    this.boundKeyHandler = (e: KeyboardEvent) => {
+      let delta = 0;
+      if (e.key === 'ArrowDown') delta = 70;
+      else if (e.key === 'ArrowUp') delta = -70;
+      else if (e.key === 'PageDown' || (e.key === ' ' && !e.shiftKey)) delta = window.innerHeight * 0.6;
+      else if (e.key === 'PageUp' || (e.key === ' ' && e.shiftKey)) delta = -window.innerHeight * 0.6;
+
+      if (delta !== 0) {
+        const active = document.activeElement;
+        if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA')) return;
+        e.preventDefault();
+        const maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+        this.targetScrollY = Math.min(Math.max(0, this.targetScrollY + delta), maxScroll);
+        if (!this.isMomentumScrolling) {
+          this.isMomentumScrolling = true;
+          this.runMomentumLoop();
+        }
+      }
+    };
+
+    window.addEventListener('wheel', this.boundWheelHandler, { passive: false });
+    window.addEventListener('keydown', this.boundKeyHandler);
+  }
+
+  private runMomentumLoop = () => {
+    const ease = 0.045; // Slow, luxurious floating momentum dampening
+    const diff = this.targetScrollY - this.currentScrollY;
+
+    if (Math.abs(diff) < 0.35) {
+      this.currentScrollY = this.targetScrollY;
+      window.scrollTo(0, this.currentScrollY);
+      ScrollTrigger.update();
+      this.isMomentumScrolling = false;
+      return;
+    }
+
+    this.currentScrollY += diff * ease;
+    window.scrollTo(0, this.currentScrollY);
+    ScrollTrigger.update();
+
+    this.momentumRafId = requestAnimationFrame(this.runMomentumLoop);
+  };
 
   ngAfterViewInit(): void {
+    this.initContinuousSmoothScroll();
     const root = this.stageInnerRef.nativeElement;
 
     const oldObjs = gsap.utils.toArray<HTMLElement>(
@@ -543,7 +618,12 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
         trigger: this.scrollyRef.nativeElement,
         start: 'top top',
         end: 'bottom bottom',
-        scrub: 0.6,
+        scrub: 2.2,
+        onUpdate: (self) => {
+          if (self.progress < 0.95 && self.isActive) {
+            this.activeNav.set('home');
+          }
+        },
       },
     });
 
@@ -612,22 +692,29 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
 
       this.aboutTl.fromTo(
         primaryWrapper,
-        { y: -30 },
-        { y: 30, ease: 'none' },
+        { y: -40 },
+        { y: 40, ease: 'none' },
         0
       );
 
       this.aboutTl.fromTo(
         primaryImg,
-        { scale: 1.15 },
-        { scale: 1.0, ease: 'none' },
+        { scale: 1.2, yPercent: -15 },
+        { scale: 1.05, yPercent: 15, ease: 'none' },
         0
       );
 
       this.aboutTl.fromTo(
         secondaryWrapper,
-        { y: 60, scale: 0.92 },
-        { y: -45, scale: 1.0, ease: 'none' },
+        { y: 70, scale: 0.9 },
+        { y: -60, scale: 1.02, ease: 'none' },
+        0
+      );
+
+      this.aboutTl.fromTo(
+        secondaryImg,
+        { scale: 1.25, yPercent: 18 },
+        { scale: 1.05, yPercent: -18, ease: 'none' },
         0
       );
 
@@ -888,18 +975,27 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
         }, zoomStartTime);
       }
 
-      // Single Unified ScrollTrigger on About/USP pinned section
+      this.masterTl = masterTl;
+
+      // Single Unified ScrollTrigger on About/USP pinned section (extended scroll track for slow, graceful parallax)
       this.uspTrigger = ScrollTrigger.create({
         trigger: aboutSection,
         start: 'top top',
-        end: () => '+=' + window.innerHeight * 8.5,
+        end: () => '+=' + window.innerHeight * 32.0,
         pin: true,
-        scrub: 0.85,
+        scrub: 2.4,
         anticipatePin: 1,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
           this.aboutScrollProgress.set(self.progress);
           masterTl.progress(self.progress);
+          if (self.isActive) {
+            if (self.progress >= 0.88) {
+              this.activeNav.set('services');
+            } else {
+              this.activeNav.set('about');
+            }
+          }
         },
       });
 
@@ -1012,6 +1108,15 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
 
       const showcaseTl = gsap.timeline({ paused: true });
 
+      const showcaseBgText = showcaseSection.querySelector('.showcase-bg-typography');
+      if (showcaseBgText) {
+        showcaseTl.fromTo(showcaseBgText,
+          { yPercent: 25, opacity: 0.12 },
+          { yPercent: -45, opacity: 0.28, duration: 8.0, ease: 'none' },
+          0
+        );
+      }
+
       // Step 1: First image moves from bottom to center, zooms in and expands to full showcase size
       showcaseTl.to(cards[0], {
         y: '0%',
@@ -1021,9 +1126,18 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
         ease: 'power3.out',
       }, 0);
 
+      const firstImg = cards[0].querySelector('.showcase-img');
+      if (firstImg) {
+        showcaseTl.fromTo(firstImg,
+          { scale: 1.2, yPercent: 12 },
+          { scale: 1.05, yPercent: 0, duration: 1.2, ease: 'power2.out' },
+          0
+        );
+      }
+
       // (Hold window to read Card 0)
 
-      // Step 2 & 3: Transitions between sequential images
+      // Step 2 & 3: Transitions between sequential images with counter-parallax depth
       let lastTransitionTime = 0;
       for (let i = 0; i < cards.length - 1; i++) {
         const transitionTime = 1.6 + i * 2.0;
@@ -1039,6 +1153,16 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
           ease: 'power2.inOut',
         }, transitionTime);
 
+        const currentImg = cards[i].querySelector('.showcase-img');
+        if (currentImg) {
+          showcaseTl.to(currentImg, {
+            yPercent: -15,
+            scale: 1.15,
+            duration: d,
+            ease: 'power2.inOut',
+          }, transitionTime);
+        }
+
         // Simultaneously, next image enters from bottom to center, increasing size and zooming in
         showcaseTl.to(cards[i + 1], {
           y: '0%',
@@ -1047,6 +1171,15 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
           duration: d,
           ease: 'power2.inOut',
         }, transitionTime);
+
+        const nextImg = cards[i + 1].querySelector('.showcase-img');
+        if (nextImg) {
+          showcaseTl.fromTo(nextImg,
+            { yPercent: 18, scale: 1.2 },
+            { yPercent: 0, scale: 1.05, duration: d, ease: 'power2.inOut' },
+            transitionTime
+          );
+        }
       }
 
       // Step 4: After the last image is shown, slide Projects Section in from Right to Left!
@@ -1071,7 +1204,7 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
         }, projectsStartTime);
       }
 
-      // Step 5: Sequential Right-to-Left Stacking Project Pages (Hover/Page-over-page effect)
+      // Step 5: Sequential Right-to-Left Stacking Project Pages (Hover/Page-over-page effect with parallax images)
       let currentTimelineTime = projectsStartTime + projectsDuration + 0.8;
 
       projectPages.forEach((page, index) => {
@@ -1111,6 +1244,15 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
           },
           currentTimelineTime
         );
+
+        const projectImg = page.querySelector('.project-img');
+        if (projectImg) {
+          showcaseTl.fromTo(projectImg,
+            { xPercent: 20, scale: 1.18 },
+            { xPercent: 0, scale: 1.05, duration: pageDuration * 1.1, ease: 'power2.out' },
+            currentTimelineTime
+          );
+        }
 
         // Advance timeline
         currentTimelineTime += pageDuration + holdTime;
@@ -1335,29 +1477,160 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
         );
       }
 
+      this.showcaseTl = showcaseTl;
+
+      // Showcase & Projects Master ScrollTrigger (generous scroll runway + smooth scrub inertia)
       this.showcaseTrigger = ScrollTrigger.create({
         trigger: showcaseSection,
         start: 'top top',
-        end: () => '+=' + window.innerHeight * (8 + (projectPages.length || 4) * 2.2 + 28.0),
+        end: () => '+=' + window.innerHeight * 115.0,
         pin: true,
-        scrub: 0.85,
+        scrub: 2.6,
         anticipatePin: 1,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
           showcaseTl.progress(self.progress);
+          if (self.isActive) {
+            const p = self.progress;
+            if (p >= 0.88) {
+              this.activeNav.set('contact');
+            } else if (p >= 0.72) {
+              this.activeNav.set('reviews');
+            } else if (p >= 0.44) {
+              this.activeNav.set('gallery');
+            } else {
+              this.activeNav.set('projects');
+            }
+          }
         },
       });
 
     }, showcaseSection);
   }
 
+  scrollToSection(target: string, event?: Event): void {
+    if (event) {
+      event.preventDefault();
+    }
+
+    let targetY = 0;
+
+    switch (target) {
+      case 'home':
+        targetY = 0;
+        this.activeNav.set('home');
+        break;
+
+      case 'about':
+        if (this.uspTrigger) {
+          targetY = this.uspTrigger.start;
+        } else if (this.aboutSectionRef) {
+          targetY = this.aboutSectionRef.nativeElement.offsetTop;
+        }
+        this.activeNav.set('about');
+        break;
+
+      case 'why-us':
+        if (this.uspTrigger) {
+          const totalD = this.masterTl?.totalDuration() || 10.75;
+          const p = Math.min(Math.max(2.8 / totalD, 0), 1);
+          targetY = this.uspTrigger.start + p * (this.uspTrigger.end - this.uspTrigger.start);
+        }
+        this.activeNav.set('about');
+        break;
+
+      case 'services':
+        if (this.uspTrigger) {
+          const totalD = this.masterTl?.totalDuration() || 10.75;
+          const p = Math.min(Math.max(9.8 / totalD, 0), 0.98);
+          targetY = this.uspTrigger.start + p * (this.uspTrigger.end - this.uspTrigger.start);
+        }
+        this.activeNav.set('services');
+        break;
+
+      case 'showcase':
+        if (this.showcaseTrigger) {
+          targetY = this.showcaseTrigger.start;
+        } else if (this.showcaseSectionRef) {
+          targetY = this.showcaseSectionRef.nativeElement.offsetTop;
+        }
+        this.activeNav.set('projects');
+        break;
+
+      case 'projects':
+        if (this.showcaseTrigger) {
+          const totalD = this.showcaseTl?.totalDuration() || 29.0;
+          const p = 6.2 / totalD;
+          targetY = this.showcaseTrigger.start + p * (this.showcaseTrigger.end - this.showcaseTrigger.start);
+        }
+        this.activeNav.set('projects');
+        break;
+
+      case 'gallery':
+        if (this.showcaseTrigger) {
+          const totalD = this.showcaseTl?.totalDuration() || 29.0;
+          const p = 16.8 / totalD;
+          targetY = this.showcaseTrigger.start + p * (this.showcaseTrigger.end - this.showcaseTrigger.start);
+        }
+        this.activeNav.set('gallery');
+        break;
+
+      case 'reviews':
+      case 'testimonials':
+        if (this.showcaseTrigger) {
+          const totalD = this.showcaseTl?.totalDuration() || 29.0;
+          const p = 24.2 / totalD;
+          targetY = this.showcaseTrigger.start + p * (this.showcaseTrigger.end - this.showcaseTrigger.start);
+        }
+        this.activeNav.set('reviews');
+        break;
+
+      case 'contact':
+      case 'enquiry':
+        if (this.showcaseTrigger) {
+          const totalD = this.showcaseTl?.totalDuration() || 29.0;
+          const p = 27.6 / totalD;
+          targetY = this.showcaseTrigger.start + p * (this.showcaseTrigger.end - this.showcaseTrigger.start);
+        }
+        this.activeNav.set('contact');
+        break;
+
+      case 'footer':
+        targetY = document.documentElement.scrollHeight;
+        break;
+
+      default:
+        const el = document.getElementById(target);
+        if (el) {
+          targetY = el.offsetTop;
+        }
+        break;
+    }
+
+    // Smoothly glide to target via momentum interpolation
+    this.targetScrollY = targetY;
+    if (!this.isMomentumScrolling) {
+      this.isMomentumScrolling = true;
+      this.runMomentumLoop();
+    }
+  }
+
   scrollToTop(): void {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    this.scrollToSection('home');
   }
 
   ngOnDestroy(): void {
     if (this.animFrameId) {
       cancelAnimationFrame(this.animFrameId);
+    }
+    if (this.momentumRafId) {
+      cancelAnimationFrame(this.momentumRafId);
+    }
+    if (this.boundWheelHandler) {
+      window.removeEventListener('wheel', this.boundWheelHandler);
+    }
+    if (this.boundKeyHandler) {
+      window.removeEventListener('keydown', this.boundKeyHandler);
     }
     this.showcaseCtx?.revert();
     this.showcaseTrigger?.kill();

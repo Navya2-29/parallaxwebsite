@@ -1,6 +1,6 @@
 <header class="navbar">
   <div class="nav-container">
-    <a href="#" class="logo">
+    <a href="#" class="logo" (click)="scrollToSection('home', $event)">
       <svg width="32" height="26" viewBox="0 0 32 26" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M3 15.5L13 4.5L21.5 13.5L30 4.5" stroke="#778663" stroke-width="3.5" stroke-linecap="round"
           stroke-linejoin="round" />
@@ -11,33 +11,31 @@
     </a>
 
     <nav class="nav-links">
-      <a href="#" class="nav-item active">
+      <a href="#home" class="nav-item" [class.active]="activeNav() === 'home'" (click)="scrollToSection('home', $event)">
         Home
-        <svg class="arrow" width="10" height="6" viewBox="0 0 10 6" fill="none">
-          <path d="M1 1.5L5 4.5L9 1.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
-            stroke-linejoin="round" />
-        </svg>
       </a>
-      <a href="#" class="nav-item">
+      <a href="#about" class="nav-item" [class.active]="activeNav() === 'about'" (click)="scrollToSection('about', $event)">
         About Us
       </a>
-      <a href="#" class="nav-item">
+      <a href="#services" class="nav-item" [class.active]="activeNav() === 'services'" (click)="scrollToSection('services', $event)">
         Services
       </a>
-      <a href="#" class="nav-item">
-        Project
+      <a href="#projects" class="nav-item" [class.active]="activeNav() === 'projects'" (click)="scrollToSection('projects', $event)">
+        Projects
       </a>
-      <a href="#" class="nav-item">
-        Pages
+      <a href="#gallery" class="nav-item" [class.active]="activeNav() === 'gallery'" (click)="scrollToSection('gallery', $event)">
+        Gallery
       </a>
-      <a href="#" class="nav-item">
-        Blog
+      <a href="#reviews" class="nav-item" [class.active]="activeNav() === 'reviews'" (click)="scrollToSection('reviews', $event)">
+        Reviews
       </a>
-      <a href="#" class="nav-item">Contact</a>
+      <a href="#contact" class="nav-item" [class.active]="activeNav() === 'contact'" (click)="scrollToSection('contact', $event)">
+        Contact
+      </a>
     </nav>
 
     <div class="nav-actions">
-      <a href="#" class="btn-quote">Get a Quote</a>
+      <a href="#contact" class="btn-quote" (click)="scrollToSection('contact', $event)">Get a Quote</a>
     </div>
   </div>
 </header>
@@ -176,7 +174,7 @@
                 our experienced team delivers every project with exceptional craftsmanship and attention to detail.
               </span>
             </div>
-            <a href="#" class="btn-start text-reveal-item inline-block" [class.revealed]="isTextRevealed(0.64)">Start Your
+            <a href="#contact" class="btn-start text-reveal-item inline-block" [class.revealed]="isTextRevealed(0.64)" (click)="scrollToSection('contact', $event)">Start Your
               Project</a>
           </div>
         </div>
@@ -465,12 +463,6 @@
           </div>
         </div>
 
-        <!-- Bottom Corner Watermark badge -->
-        <div class="gallery-corner-watermark">
-          <span class="watermark-is">Renovast</span>
-          <span class="watermark-boring">STUDIO</span>
-        </div>
-
       </div>
 
     </div>
@@ -688,12 +680,12 @@
       </div>
 
       <ul class="footer-nav-list">
-        <li><a href="#about" (click)="$event.preventDefault()"><span class="chevron">›</span> About Studio</a></li>
-        <li><a href="#showcase" (click)="$event.preventDefault()"><span class="chevron">›</span> Featured Spaces</a></li>
-        <li><a href="#projects" (click)="$event.preventDefault()"><span class="chevron">›</span> Architectural Portfolio</a></li>
-        <li><a href="#gallery" (click)="$event.preventDefault()"><span class="chevron">›</span> Curated Gallery</a></li>
-        <li><a href="#testimonials" (click)="$event.preventDefault()"><span class="chevron">›</span> Client Reviews</a></li>
-        <li><a href="#enquiry" (click)="$event.preventDefault()"><span class="chevron">›</span> Start A Project</a></li>
+        <li><a href="#about" (click)="scrollToSection('about', $event)"><span class="chevron">›</span> About Studio</a></li>
+        <li><a href="#showcase" (click)="scrollToSection('showcase', $event)"><span class="chevron">›</span> Featured Spaces</a></li>
+        <li><a href="#projects" (click)="scrollToSection('projects', $event)"><span class="chevron">›</span> Architectural Portfolio</a></li>
+        <li><a href="#gallery" (click)="scrollToSection('gallery', $event)"><span class="chevron">›</span> Curated Gallery</a></li>
+        <li><a href="#testimonials" (click)="scrollToSection('reviews', $event)"><span class="chevron">›</span> Client Reviews</a></li>
+        <li><a href="#enquiry" (click)="scrollToSection('contact', $event)"><span class="chevron">›</span> Start A Project</a></li>
       </ul>
     </div>
 
@@ -705,12 +697,12 @@
       </div>
 
       <ul class="footer-nav-list">
-        <li><a href="#architecture" (click)="$event.preventDefault()"><span class="chevron">›</span> Architectural Design</a></li>
-        <li><a href="#turnkey" (click)="$event.preventDefault()"><span class="chevron">›</span> Turnkey Renovation</a></li>
-        <li><a href="#joinery" (click)="$event.preventDefault()"><span class="chevron">›</span> Bespoke Joinery</a></li>
-        <li><a href="#interiors" (click)="$event.preventDefault()"><span class="chevron">›</span> Interior Architecture</a></li>
-        <li><a href="#heritage" (click)="$event.preventDefault()"><span class="chevron">›</span> Heritage Restoration</a></li>
-        <li><a href="#landscape" (click)="$event.preventDefault()"><span class="chevron">›</span> Outdoor & Landscape</a></li>
+        <li><a href="#architecture" (click)="scrollToSection('services', $event)"><span class="chevron">›</span> Architectural Design</a></li>
+        <li><a href="#turnkey" (click)="scrollToSection('services', $event)"><span class="chevron">›</span> Turnkey Renovation</a></li>
+        <li><a href="#joinery" (click)="scrollToSection('services', $event)"><span class="chevron">›</span> Bespoke Joinery</a></li>
+        <li><a href="#interiors" (click)="scrollToSection('services', $event)"><span class="chevron">›</span> Interior Architecture</a></li>
+        <li><a href="#heritage" (click)="scrollToSection('services', $event)"><span class="chevron">›</span> Heritage Restoration</a></li>
+        <li><a href="#landscape" (click)="scrollToSection('services', $event)"><span class="chevron">›</span> Outdoor & Landscape</a></li>
       </ul>
     </div>
 

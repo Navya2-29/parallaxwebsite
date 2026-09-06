@@ -61,16 +61,36 @@
       font-family: 'Helvetica Neue', Arial, sans-serif;
       font-size: 15px;
       font-weight: 600;
-      color: #333333;
+      color: #444444;
       text-decoration: none;
       display: flex;
       align-items: center;
       gap: 6px;
-      transition: color 0.2s ease;
+      cursor: pointer;
+      padding: 6px 4px;
+      position: relative;
+      transition: color 0.25s ease;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 50%;
+        width: 0;
+        height: 2px;
+        background: #778663;
+        border-radius: 2px;
+        transform: translateX(-50%);
+        transition: width 0.25s ease;
+      }
 
       &.active,
       &:hover {
         color: #778663;
+
+        &::after {
+          width: 80%;
+        }
       }
 
       .arrow {
@@ -114,7 +134,7 @@
 
 .scrolly {
   position: relative;
-  height: 520vh;
+  height: 1100vh;
 }
 
 .stage {
@@ -1507,34 +1527,6 @@
           }
         }
       }
-
-      .gallery-corner-watermark {
-        position: absolute;
-        bottom: 28px;
-        right: 48px;
-        display: flex;
-        align-items: baseline;
-        gap: 6px;
-        pointer-events: none;
-        user-select: none;
-
-        .watermark-is {
-          font-family: 'Bodoni Moda', Georgia, serif;
-          font-style: italic;
-          font-size: clamp(22px, 2.2vw, 32px);
-          color: #111111;
-        }
-
-        .watermark-boring {
-          font-family: 'DM Sans', sans-serif;
-          font-weight: 900;
-          font-size: clamp(24px, 2.5vw, 38px);
-          letter-spacing: -0.04em;
-          color: #111111;
-          transform: rotate(180deg);
-          display: inline-block;
-        }
-      }
     }
   }
 
@@ -2360,10 +2352,6 @@
         .gallery-editorial-desc {
           font-size: 14px;
           margin-bottom: 16px;
-        }
-
-        .gallery-corner-watermark {
-          display: none;
         }
       }
     }
