@@ -412,5 +412,86 @@
       </div>
     </div>
 
+    <!-- 7. Full-Screen Editorial Gallery Section (Full screen title/desc -> Right col transition -> Bottom-to-Top images) -->
+    <div class="gallery-split-panel" #gallerySection [style.z-index]="40">
+      
+      <!-- Left Column: col-6 Vertical Bottom-to-Top Scrolling Gallery Track -->
+      <div class="gallery-left-col" #galleryLeftCol>
+        <!-- Vertical Scrolling Gallery Track -->
+        <div class="gallery-vertical-track" #galleryTrack>
+          <div class="gallery-card" *ngFor="let item of galleryImages; let idx = index">
+            <div class="gallery-card-media">
+              <img [src]="item.image" [alt]="item.title" class="gallery-card-img" />
+              <div class="gallery-card-overlay"></div>
+              
+              <!-- Bottom metadata row with diagonal arrow -->
+              <div class="gallery-card-info">
+                <div class="gallery-card-text">
+                  <span class="gallery-card-cat">{{ item.category }} • {{ item.location }}</span>
+                  <h4 class="gallery-card-title">{{ item.title }}</h4>
+                </div>
+                <div class="gallery-card-arrow">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M7 17L17 7M17 7H7M17 7V17"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Full-Screen -> Docked Col-6 Pinned Editorial Content -->
+      <div class="gallery-right-col" #galleryRightCol>
+        
+        <!-- Top Navigation Header inside Gallery -->
+        <div class="gallery-top-bar">
+          <span class="gallery-nav-breadcrumb">Portfolio / Gallery</span>
+          <div class="gallery-menu-badge">
+            <span>Explore</span>
+          </div>
+        </div>
+
+        <!-- Fixed SOTD Badge -->
+        <div class="gallery-sotd-badge">
+          <span class="w-logo">W.</span>
+          <span class="badge-text">Site of the Day</span>
+        </div>
+
+        <!-- Center Editorial Content -->
+        <div class="gallery-editorial-content">
+          <div class="gallery-eyebrow-row">
+            <span class="gallery-eyebrow">{{ galleryData.eyebrow }}</span>
+            <span class="gallery-badge" *ngIf="galleryData.badge">{{ galleryData.badge }}</span>
+          </div>
+          
+          <!-- Clean Modern Gallery Heading -->
+          <h2 class="gallery-clean-heading">
+            {{ galleryData.title }}
+          </h2>
+
+          <p class="gallery-editorial-desc">
+            {{ galleryData.description }}
+          </p>
+
+          <!-- Key Pillars -->
+          <div class="gallery-pillars">
+            <div class="pillar-item" *ngFor="let p of galleryData.pillars">
+              <span class="pillar-dot"></span>
+              <span>{{ p.text }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Corner Watermark badge -->
+        <div class="gallery-corner-watermark">
+          <span class="watermark-is">Renovast</span>
+          <span class="watermark-boring">STUDIO</span>
+        </div>
+
+      </div>
+
+    </div>
+
   </div>
 </section>

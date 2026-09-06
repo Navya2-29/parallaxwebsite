@@ -44,6 +44,15 @@ export interface ProjectItem {
   badge?: string;
 }
 
+export interface GalleryItem {
+  id: string;
+  title: string;
+  category: string;
+  location: string;
+  year: string;
+  image: string;
+}
+
 @Component({
   selector: 'app-room-reveal',
   standalone: true,
@@ -64,6 +73,10 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('servicesZoomBox') servicesZoomBoxRef?: ElementRef<HTMLElement>;
   @ViewChild('showcaseSection') showcaseSectionRef?: ElementRef<HTMLElement>;
   @ViewChild('projectsPanel') projectsPanelRef?: ElementRef<HTMLElement>;
+  @ViewChild('gallerySection') gallerySectionRef?: ElementRef<HTMLElement>;
+  @ViewChild('galleryTrack') galleryTrackRef?: ElementRef<HTMLElement>;
+  @ViewChild('galleryLeftCol') galleryLeftColRef?: ElementRef<HTMLElement>;
+  @ViewChild('galleryRightCol') galleryRightColRef?: ElementRef<HTMLElement>;
 
   private showcaseCtx?: gsap.Context;
   private showcaseTrigger?: ScrollTrigger;
@@ -169,6 +182,63 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
       image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=80',
       accentColor: '#7BA098',
       badge: 'Sustainable Design 2024',
+    },
+  ];
+
+  // Gallery Section Heading, Subheading & Editorial Description
+  galleryData = {
+    eyebrow: 'ARCHITECTURAL GALLERY',
+    badge: 'Curated Spaces',
+    title: 'Spaces Crafted For Modern Living',
+    description: 'A visual showcase of our bespoke residential transformations, architectural facades, seamless indoor-outdoor living pavilions, and tailored interior joinery. Each space reflects our commitment to structural precision, natural materiality, and timeless aesthetic serenity.',
+    pillars: [
+      { text: 'Structural Precision' },
+      { text: 'Sustainable Craftsmanship' },
+      { text: 'Timeless Materiality' },
+    ],
+  };
+
+  // Gallery Editorial Showcase Items for Left Column Vertical Scroll (Bottom to Top)
+  galleryImages: GalleryItem[] = [
+    {
+      id: '01',
+      title: 'THE SUNKEN POOL & LOUNGE',
+      category: 'OUTDOOR LIVING',
+      location: 'OLEIROS',
+      year: '2024',
+      image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1200&q=80',
+    },
+    {
+      id: '02',
+      title: 'VILLA HORIZON RESIDENCE',
+      category: 'RESIDENTIAL ARCHITECTURE',
+      location: 'BARCELONA',
+      year: '2024',
+      image: 'https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=1200&q=80',
+    },
+    {
+      id: '03',
+      title: 'MEDITERRANEAN GARDEN & PATIO',
+      category: 'LANDSCAPE DESIGN',
+      location: 'MADRID',
+      year: '2024',
+      image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+    },
+    {
+      id: '04',
+      title: 'TERRACE PAVILION & WATER FEATURE',
+      category: 'EXTERIOR LIVING',
+      location: 'IBIZA',
+      year: '2023',
+      image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80',
+    },
+    {
+      id: '05',
+      title: 'BESPOKE TIMBER ATELIER',
+      category: 'INTERIOR ARCHITECTURE',
+      location: 'VALENCIA',
+      year: '2024',
+      image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80',
     },
   ];
 
@@ -757,6 +827,11 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
     const cards = gsap.utils.toArray<HTMLElement>(showcaseSection.querySelectorAll('.showcase-card'));
     const projectsPanel = this.projectsPanelRef?.nativeElement;
     const projectPages = gsap.utils.toArray<HTMLElement>(showcaseSection.querySelectorAll('.project-page-layer'));
+    const gallerySection = this.gallerySectionRef?.nativeElement;
+    const galleryTrack = this.galleryTrackRef?.nativeElement;
+    const galleryLeftCol = this.galleryLeftColRef?.nativeElement;
+    const galleryRightCol = this.galleryRightColRef?.nativeElement;
+    const galleryImages = gsap.utils.toArray<HTMLElement>(gallerySection?.querySelectorAll('.gallery-card-img') || []);
 
     if (cards.length === 0) return;
 
@@ -790,6 +865,22 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
           filter: 'brightness(1)',
         });
       });
+
+      // Initial state for gallery section:
+      // Right Col (Title/Description) starts Full Screen (100vw)
+      // Left Col (Image Track) starts tucked away
+      if (gallerySection) {
+        gsap.set(gallerySection, { xPercent: 100 });
+      }
+      if (galleryRightCol) {
+        gsap.set(galleryRightCol, { width: '100vw' });
+      }
+      if (galleryLeftCol) {
+        gsap.set(galleryLeftCol, { xPercent: -100, opacity: 0 });
+      }
+      if (galleryTrack) {
+        gsap.set(galleryTrack, { yPercent: 100 });
+      }
 
       const showcaseTl = gsap.timeline({ paused: true });
 
@@ -897,10 +988,93 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
         currentTimelineTime += pageDuration + holdTime;
       });
 
+      // Step 6: Gallery Section enters from Right to Left with FULL-SCREEN Title & Description
+      const galleryStartTime = currentTimelineTime;
+      const gallerySlideDuration = 1.4;
+
+      if (projectPages.length > 0) {
+        const lastProjectPage = projectPages[projectPages.length - 1];
+        showcaseTl.to(lastProjectPage, {
+          xPercent: -12,
+          scale: 0.95,
+          filter: 'brightness(0.6)',
+          duration: gallerySlideDuration,
+          ease: 'power2.inOut',
+        }, galleryStartTime);
+      }
+
+      if (gallerySection) {
+        showcaseTl.fromTo(gallerySection,
+          { xPercent: 100 },
+          {
+            xPercent: 0,
+            duration: gallerySlideDuration,
+            ease: 'power2.out',
+          },
+          galleryStartTime
+        );
+      }
+
+      // Hold window on Full-Screen Title & Description
+      const fullScreenHoldDuration = 1.4;
+      const splitTransitionTime = galleryStartTime + gallerySlideDuration + fullScreenHoldDuration;
+      const splitTransitionDuration = 1.5;
+
+      // Step 7: Title & Description moves from Full Screen to Right Side (col-6) & Left Col enters
+      if (galleryRightCol) {
+        showcaseTl.to(galleryRightCol, {
+          width: '50vw',
+          duration: splitTransitionDuration,
+          ease: 'power3.inOut',
+        }, splitTransitionTime);
+      }
+
+      if (galleryLeftCol) {
+        showcaseTl.fromTo(galleryLeftCol,
+          { xPercent: -100, opacity: 0 },
+          {
+            xPercent: 0,
+            opacity: 1,
+            duration: splitTransitionDuration,
+            ease: 'power3.inOut',
+          },
+          splitTransitionTime
+        );
+      }
+
+      // Step 8: Left Column Gallery Images scroll smoothly from Bottom to Top
+      const galleryScrollStartTime = splitTransitionTime + splitTransitionDuration + 0.4;
+      const galleryScrollDuration = 6.5;
+
+      if (galleryTrack) {
+        showcaseTl.fromTo(galleryTrack,
+          { yPercent: 100 },
+          {
+            yPercent: -75,
+            duration: galleryScrollDuration,
+            ease: 'none',
+          },
+          galleryScrollStartTime
+        );
+      }
+
+      // Parallax effect on gallery images
+      if (galleryImages.length > 0) {
+        showcaseTl.fromTo(galleryImages,
+          { yPercent: 15 },
+          {
+            yPercent: -15,
+            duration: galleryScrollDuration,
+            ease: 'none',
+          },
+          galleryScrollStartTime
+        );
+      }
+
       this.showcaseTrigger = ScrollTrigger.create({
         trigger: showcaseSection,
         start: 'top top',
-        end: () => '+=' + window.innerHeight * (8 + (projectPages.length || 4) * 2.2),
+        end: () => '+=' + window.innerHeight * (8 + (projectPages.length || 4) * 2.2 + 11.5),
         pin: true,
         scrub: 0.85,
         anticipatePin: 1,
