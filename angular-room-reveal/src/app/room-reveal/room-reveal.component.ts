@@ -53,6 +53,16 @@ export interface GalleryItem {
   image: string;
 }
 
+export interface ReviewItem {
+  id: string;
+  quote: string;
+  name: string;
+  role: string;
+  company?: string;
+  avatar: string;
+  rating?: number;
+}
+
 @Component({
   selector: 'app-room-reveal',
   standalone: true,
@@ -77,6 +87,9 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('galleryTrack') galleryTrackRef?: ElementRef<HTMLElement>;
   @ViewChild('galleryLeftCol') galleryLeftColRef?: ElementRef<HTMLElement>;
   @ViewChild('galleryRightCol') galleryRightColRef?: ElementRef<HTMLElement>;
+  @ViewChild('reviewSection') reviewSectionRef?: ElementRef<HTMLElement>;
+  @ViewChild('reviewZoomBox') reviewZoomBoxRef?: ElementRef<HTMLElement>;
+  @ViewChild('reviewWhiteBackdrop') reviewWhiteBackdropRef?: ElementRef<HTMLElement>;
 
   private showcaseCtx?: gsap.Context;
   private showcaseTrigger?: ScrollTrigger;
@@ -241,6 +254,73 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
       image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80',
     },
   ];
+
+  // Client Reviews List matching screenshot
+  reviewsList: ReviewItem[] = [
+    {
+      id: '01',
+      quote: "It's an extraordinary renovation experience with a world-class architectural team. The attention to natural light, bespoke timber joinery, and structural finishes exceeded every expectation.",
+      name: 'Elena Valenta',
+      role: 'Villa Owner',
+      company: 'Costa Brava',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
+      rating: 5,
+    },
+    {
+      id: '02',
+      quote: "It's a super product with professionnal support team. I can't wait to see the futur architectural features and collaborative projects with Renovast.",
+      name: 'Emily Peterson',
+      role: 'CEO',
+      company: 'Design Atelier',
+      avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=300&q=80',
+      rating: 5,
+    },
+    {
+      id: '03',
+      quote: "We've been looking for an architecture & turnkey remodeling team of this calibre since we founded our private residential estate. Flawless execution from start to finish.",
+      name: 'Adrien Jacquot',
+      role: 'Head of Sales',
+      company: 'Luxury Living EU',
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80',
+      rating: 5,
+    },
+    {
+      id: '04',
+      quote: "Transforming our 19th-century townhouse while preserving its historic integrity was a monumental task. Renovast delivered absolute architectural perfection.",
+      name: 'Marcus Sterling',
+      role: 'Private Investor',
+      company: 'Madrid',
+      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80',
+      rating: 5,
+    },
+    {
+      id: '05',
+      quote: "From initial 3D design to turnkey handover, every deadline was honored and the material quality is second to none. Truly inspirational work.",
+      name: 'Sophia Laurent',
+      role: 'Creative Director',
+      company: 'Barcelona',
+      avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80',
+      rating: 5,
+    },
+  ];
+
+  activeReviewIndex = signal(1);
+
+  nextReview(): void {
+    const nextIdx = (this.activeReviewIndex() + 1) % this.reviewsList.length;
+    this.activeReviewIndex.set(nextIdx);
+  }
+
+  prevReview(): void {
+    const prevIdx = (this.activeReviewIndex() - 1 + this.reviewsList.length) % this.reviewsList.length;
+    this.activeReviewIndex.set(prevIdx);
+  }
+
+  setReview(index: number): void {
+    if (index >= 0 && index < this.reviewsList.length) {
+      this.activeReviewIndex.set(index);
+    }
+  }
 
   // 12 columns x 8 rows pixel-block overlay array (96 blocks)
   pixelBlocks: PixelBlock[] = [];
@@ -832,6 +912,9 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
     const galleryLeftCol = this.galleryLeftColRef?.nativeElement;
     const galleryRightCol = this.galleryRightColRef?.nativeElement;
     const galleryImages = gsap.utils.toArray<HTMLElement>(gallerySection?.querySelectorAll('.gallery-card-img') || []);
+    const reviewSection = this.reviewSectionRef?.nativeElement;
+    const reviewZoomBox = this.reviewZoomBoxRef?.nativeElement;
+    const reviewWhiteBackdrop = this.reviewWhiteBackdropRef?.nativeElement;
 
     if (cards.length === 0) return;
 
@@ -880,6 +963,22 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
       }
       if (galleryTrack) {
         gsap.set(galleryTrack, { yPercent: 100 });
+      }
+
+      // Initial state for white backdrop & review section
+      if (reviewWhiteBackdrop) {
+        gsap.set(reviewWhiteBackdrop, { opacity: 0 });
+      }
+      if (reviewSection) {
+        gsap.set(reviewSection, { opacity: 0, pointerEvents: 'none' });
+      }
+      if (reviewZoomBox) {
+        gsap.set(reviewZoomBox, {
+          scale: 0.18,
+          borderRadius: 36,
+          opacity: 0,
+          boxShadow: '0 20px 60px rgba(0, 0, 0, 0.15)',
+        });
       }
 
       const showcaseTl = gsap.timeline({ paused: true });
@@ -1071,10 +1170,98 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
         );
       }
 
+      // Step 9A: Zoom Out Gallery Section Fully & Fade In Clean White Screen
+      const galleryZoomOutStartTime = galleryScrollStartTime + galleryScrollDuration + 0.4;
+      const galleryZoomOutDuration = 1.4;
+
+      if (reviewWhiteBackdrop) {
+        showcaseTl.to(reviewWhiteBackdrop, {
+          opacity: 1,
+          duration: 0.9,
+          ease: 'power2.inOut',
+        }, galleryZoomOutStartTime);
+      }
+
+      if (gallerySection) {
+        showcaseTl.to(gallerySection, {
+          scale: 0.05,
+          opacity: 0,
+          borderRadius: 60,
+          duration: galleryZoomOutDuration,
+          ease: 'power2.inOut',
+        }, galleryZoomOutStartTime);
+      }
+
+      // Step 9B: Show Clean White Screen for a dedicated moment
+      const whiteScreenStartTime = galleryZoomOutStartTime + galleryZoomOutDuration;
+      const whiteScreenHoldDuration = 1.2;
+
+      // Step 9C: Show A Little Bit of the Review Section (Floating Card Preview on White Canvas)
+      const reviewPreviewStartTime = whiteScreenStartTime + whiteScreenHoldDuration;
+      const reviewPreviewDuration = 1.2;
+
+      if (reviewSection) {
+        showcaseTl.fromTo(reviewSection,
+          { opacity: 0, pointerEvents: 'none' },
+          {
+            opacity: 1,
+            pointerEvents: 'auto',
+            duration: 0.6,
+            ease: 'power2.out',
+          },
+          reviewPreviewStartTime
+        );
+      }
+
+      if (reviewZoomBox) {
+        showcaseTl.fromTo(reviewZoomBox,
+          {
+            scale: 0.18,
+            borderRadius: 36,
+            opacity: 0,
+            boxShadow: '0 20px 60px rgba(0, 0, 0, 0.12)',
+          },
+          {
+            scale: 0.42,
+            borderRadius: 36,
+            opacity: 1,
+            boxShadow: '0 30px 100px rgba(0, 0, 0, 0.16)',
+            duration: reviewPreviewDuration,
+            ease: 'power2.out',
+          },
+          reviewPreviewStartTime
+        );
+      }
+
+      // Hold window so user clearly sees "a little bit" of the review section on the white canvas
+      const reviewPreviewHold = 1.4;
+
+      // Step 9D: Zoom In the Review Section to fill the entire screen!
+      const reviewZoomInStartTime = reviewPreviewStartTime + reviewPreviewDuration + reviewPreviewHold;
+      const reviewZoomInDuration = 1.8;
+
+      if (reviewZoomBox) {
+        showcaseTl.to(reviewZoomBox, {
+          scale: 1.0,
+          borderRadius: 0,
+          boxShadow: '0 0 0 rgba(0, 0, 0, 0)',
+          duration: reviewZoomInDuration,
+          ease: 'power2.inOut',
+        }, reviewZoomInStartTime);
+      }
+
+      // Step 10: Smooth reading and auto-panning through reviews on continued scroll
+      const reviewHoldStartTime = reviewZoomInStartTime + reviewZoomInDuration + 0.4;
+      showcaseTl.call(() => this.activeReviewIndex.set(0), undefined, reviewHoldStartTime);
+      showcaseTl.call(() => this.activeReviewIndex.set(1), undefined, reviewHoldStartTime + 1.3);
+      showcaseTl.call(() => this.activeReviewIndex.set(2), undefined, reviewHoldStartTime + 2.6);
+      showcaseTl.call(() => this.activeReviewIndex.set(3), undefined, reviewHoldStartTime + 3.9);
+      showcaseTl.call(() => this.activeReviewIndex.set(4), undefined, reviewHoldStartTime + 5.2);
+
       this.showcaseTrigger = ScrollTrigger.create({
         trigger: showcaseSection,
         start: 'top top',
-        end: () => '+=' + window.innerHeight * (8 + (projectPages.length || 4) * 2.2 + 11.5),
+        end: () => '+=' + window.innerHeight * (8 + (projectPages.length || 4) * 2.2 + 24.0),
         pin: true,
         scrub: 0.85,
         anticipatePin: 1,

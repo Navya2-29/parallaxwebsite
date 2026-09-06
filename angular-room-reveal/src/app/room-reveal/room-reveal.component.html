@@ -493,5 +493,76 @@
 
     </div>
 
+    <!-- 7.5. White Screen Backdrop Canvas behind Review Section -->
+    <div class="review-white-backdrop" #reviewWhiteBackdrop [style.z-index]="45"></div>
+
+    <!-- 8. Zoom-In Review / Testimonials Section (Zooms in to fill screen after Gallery zoom out) -->
+    <div class="review-scrolly-panel" #reviewSection [style.z-index]="50">
+      <div class="review-zoom-container" #reviewZoomBox>
+        
+        <!-- Header with horizontal accent lines matching screenshot -->
+        <div class="review-section-header">
+          <div class="header-line"></div>
+          <h3 class="review-section-title">THEY USE OUR SERVICE</h3>
+          <div class="header-line"></div>
+        </div>
+
+        <!-- 3D Testimonial Cards Carousel Track matching screenshot -->
+        <div class="reviews-carousel-track">
+          <div class="review-card" *ngFor="let rev of reviewsList; let i = index"
+            [class.active]="activeReviewIndex() === i"
+            [class.prev]="activeReviewIndex() === i + 1"
+            [class.next]="activeReviewIndex() === i - 1"
+            [class.hidden-card]="activeReviewIndex() > i + 1 || activeReviewIndex() < i - 1"
+            (click)="setReview(i)">
+            
+            <!-- Top Quote Icon matching screenshot -->
+            <div class="review-quote-icon">
+              <svg width="40" height="30" viewBox="0 0 44 34" fill="currentColor">
+                <path d="M0 20.4C0 9.18 7.48 1.02 18.36 0L20.4 5.1C13.26 6.46 9.52 11.22 9.18 16.32H18.36V34H0V20.4ZM23.46 20.4C23.46 9.18 30.94 1.02 41.82 0L43.86 5.1C36.72 6.46 32.98 11.22 32.64 16.32H41.82V34H23.46V20.4Z"/>
+              </svg>
+            </div>
+
+            <!-- Main Testimonial Text -->
+            <p class="review-quote-text">{{ rev.quote }}</p>
+
+            <!-- Card Bottom Footer with Avatar & Info matching screenshot -->
+            <div class="review-card-footer">
+              <div class="review-avatar-box">
+                <img [src]="rev.avatar" [alt]="rev.name" class="review-avatar-img" />
+              </div>
+              <div class="review-user-info">
+                <h4 class="review-user-name">{{ rev.name }}</h4>
+                <span class="review-user-role">{{ rev.role }} <span *ngIf="rev.company">• {{ rev.company }}</span></span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Carousel Navigation Controls matching screenshot -->
+        <div class="reviews-nav-bar">
+          <button class="nav-arrow-btn prev-btn" (click)="prevReview()" aria-label="Previous Review">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M15 18l-6-6 6-6"/>
+            </svg>
+          </button>
+
+          <div class="nav-dots-row">
+            <span class="nav-dot" *ngFor="let rev of reviewsList; let i = index"
+              [class.active]="activeReviewIndex() === i"
+              (click)="setReview(i)"></span>
+          </div>
+
+          <button class="nav-arrow-btn next-btn" (click)="nextReview()" aria-label="Next Review">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M9 18l6-6-6-6"/>
+            </svg>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
   </div>
 </section>
