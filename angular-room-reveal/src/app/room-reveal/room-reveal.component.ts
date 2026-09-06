@@ -269,31 +269,31 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
     },
   ];
 
-  // Client Reviews List matching screenshot
+  // Client Reviews List
   reviewsList: ReviewItem[] = [
     {
       id: '01',
-      quote: "It's an extraordinary renovation experience with a world-class architectural team. The attention to natural light, bespoke timber joinery, and structural finishes exceeded every expectation.",
+      quote: "An extraordinary renovation experience with a world-class architectural team. The attention to natural light, bespoke timber joinery, and structural finishes exceeded every expectation.",
       name: 'Elena Valenta',
-      role: 'Villa Owner',
+      role: 'Private Villa Owner',
       company: 'Costa Brava',
       avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
       rating: 5,
     },
     {
       id: '02',
-      quote: "It's a super product with professionnal support team. I can't wait to see the futur architectural features and collaborative projects with Renovast.",
+      quote: "An exceptional architecture and turnkey renovation team. Their dedication to natural materiality, spatial flow, and flawless structural execution turned our property into an absolute masterpiece.",
       name: 'Emily Peterson',
-      role: 'CEO',
-      company: 'Design Atelier',
+      role: 'Managing Director',
+      company: 'Peterson Design Atelier',
       avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=300&q=80',
       rating: 5,
     },
     {
       id: '03',
-      quote: "We've been looking for an architecture & turnkey remodeling team of this calibre since we founded our private residential estate. Flawless execution from start to finish.",
+      quote: "We've been looking for an architecture & turnkey remodeling team of this calibre since we founded our private residential estate. Flawless execution from initial blueprint to handover.",
       name: 'Adrien Jacquot',
-      role: 'Head of Sales',
+      role: 'Principal Partner',
       company: 'Luxury Living EU',
       avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80',
       rating: 5,
@@ -309,7 +309,7 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
     },
     {
       id: '05',
-      quote: "From initial 3D design to turnkey handover, every deadline was honored and the material quality is second to none. Truly inspirational work.",
+      quote: "From initial 3D visualization to turnkey handover, every deadline was honored and the material quality is second to none. Truly inspirational craftsmanship.",
       name: 'Sophia Laurent',
       role: 'Creative Director',
       company: 'Barcelona',
@@ -389,7 +389,6 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
     this.startMagneticLoop();
   }
 
-  // "WHY CHOOSE US" USP Items matching scrollaniamtion3.mp4
   // "WHY CHOOSE US" USP Items matching pixel-accurate architectural portfolio
   uspItems = [
     {
@@ -400,7 +399,7 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
       desc: 'Structural engineering precision combined with contemporary aesthetic design.',
       image: 'https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=1200&q=80',
       cardBg: '#EEF2E8',
-      buttonText: 'El proyecto',
+      buttonText: 'Explore Project',
     },
     {
       id: '02',
@@ -410,7 +409,7 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
       desc: 'Hand-picked timber, eco-conscious stone, and non-toxic architectural finishes.',
       image: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=80',
       cardBg: '#536049',
-      buttonText: 'El proyecto',
+      buttonText: 'Explore Project',
     },
     {
       id: '03',
@@ -420,7 +419,7 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
       desc: 'Smart climate optimization, energy-efficient glazing, and solar integration.',
       image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
       cardBg: '#C5D0BA',
-      buttonText: 'El proyecto',
+      buttonText: 'Explore Project',
     },
     {
       id: '04',
@@ -430,7 +429,7 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
       desc: 'Seamless architectural landscape integration and outdoor living balance.',
       image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80',
       cardBg: '#E2E8DC',
-      buttonText: 'Soon',
+      buttonText: 'Coming Soon',
     },
     {
       id: '05',
@@ -440,7 +439,7 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
       desc: 'Custom interior joinery, bespoke lighting, and tailored finishes.',
       image: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=80',
       cardBg: '#323C2C',
-      buttonText: 'Soon',
+      buttonText: 'Coming Soon',
     },
   ];
 

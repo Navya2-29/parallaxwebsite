@@ -482,10 +482,10 @@
     <div class="review-scrolly-panel" #reviewSection [style.z-index]="50">
       <div class="review-zoom-container" #reviewZoomBox>
         
-        <!-- Header with horizontal accent lines matching screenshot -->
+        <!-- Header with horizontal accent lines matching luxury architectural style -->
         <div class="review-section-header">
           <div class="header-line"></div>
-          <h3 class="review-section-title">THEY USE OUR SERVICE</h3>
+          <h3 class="review-section-title">WHAT OUR CLIENTS SAY</h3>
           <div class="header-line"></div>
         </div>
 
@@ -557,23 +557,23 @@
               LET'S TALK ABOUT<br />YOUR PROJECT
             </h2>
             <p class="enquiry-sub-text">
-              Every collaboration begins with a conversation. Tell us about your site, idea, or ambition.
+              Every collaboration begins with a conversation. Tell us about your site, vision, or architectural ambition.
             </p>
 
             <div class="enquiry-contact-details">
               <div class="contact-info-block">
                 <span class="info-label">PHONE</span>
-                <a href="tel:+4512345678" class="info-val">+45 12 34 56 78</a>
+                <a href="tel:+34914567890" class="info-val">+34 91 456 7890</a>
               </div>
 
               <div class="contact-info-block">
                 <span class="info-label">EMAIL</span>
-                <a href="mailto:hello&#64;example.com" class="info-val">hello&#64;example.com</a>
+                <a href="mailto:hello&#64;renovast.com" class="info-val">hello&#64;renovast.com</a>
               </div>
 
               <div class="contact-info-block">
                 <span class="info-label">STUDIO</span>
-                <span class="info-val-text">Copenhagen-based architecture and interior design studio</span>
+                <span class="info-val-text">Barcelona & Madrid based architecture and turnkey renovation studio</span>
               </div>
             </div>
           </div>
@@ -589,7 +589,7 @@
               </div>
 
               <div class="form-field-group">
-                <input type="email" class="minimal-input" placeholder="Email" [(ngModel)]="enquiryForm.email" name="email" />
+                <input type="email" class="minimal-input" placeholder="Email address" [(ngModel)]="enquiryForm.email" name="email" />
               </div>
 
               <div class="form-field-group">
@@ -597,25 +597,25 @@
               </div>
 
               <div class="form-field-group">
-                <input type="text" class="minimal-input" placeholder="Service" [(ngModel)]="enquiryForm.service" name="service" />
+                <input type="text" class="minimal-input" placeholder="Requested service (e.g. Turnkey Renovation, Architecture)" [(ngModel)]="enquiryForm.service" name="service" />
               </div>
 
               <div class="form-field-row">
                 <div class="form-field-group">
-                  <input type="text" class="minimal-input" placeholder="Project type" [(ngModel)]="enquiryForm.projectType" name="projectType" />
+                  <input type="text" class="minimal-input" placeholder="Project type (e.g. Villa, Penthouse)" [(ngModel)]="enquiryForm.projectType" name="projectType" />
                 </div>
                 <div class="form-field-group">
-                  <input type="text" class="minimal-input" placeholder="Your location" [(ngModel)]="enquiryForm.location" name="location" />
+                  <input type="text" class="minimal-input" placeholder="Project location" [(ngModel)]="enquiryForm.location" name="location" />
                 </div>
               </div>
 
               <div class="form-field-group">
-                <input type="text" class="minimal-input" placeholder="Project scale" [(ngModel)]="enquiryForm.projectScale" name="projectScale" />
+                <input type="text" class="minimal-input" placeholder="Project scale / Estimated area" [(ngModel)]="enquiryForm.projectScale" name="projectScale" />
               </div>
 
               <div class="form-submit-row">
                 <button type="submit" class="btn-submit-inquiry">
-                  <span>Submit inquiry</span>
+                  <span>Submit Inquiry</span>
                 </button>
               </div>
 
@@ -631,7 +631,7 @@
 
 
 
-<!-- 11. Studio Footer matching provided screenshot -->
+<!-- 11. Studio Footer -->
 <footer class="site-main-footer" id="footer">
   <div class="footer-container">
     
@@ -644,17 +644,17 @@
           </svg>
         </div>
         <div class="logo-text-group">
-          <span class="logo-title">Ambed</span>
-          <span class="logo-subtitle">Painting & Wallpapering</span>
+          <span class="logo-title">Renovast</span>
+          <span class="logo-subtitle">Architecture & Renovation</span>
         </div>
       </div>
 
       <p class="footer-brand-desc">
-        We work with a passion of taking challenges and creating new ones in advertising sector.
+        Crafting bespoke architectural residences, contemporary renovations, and timeless interiors with structural precision and master craftsmanship.
       </p>
 
       <div class="footer-social-row">
-        <a href="#" class="social-btn" aria-label="Twitter" (click)="$event.preventDefault()">
+        <a href="#" class="social-btn" aria-label="Twitter / X" (click)="$event.preventDefault()">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
             <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/>
           </svg>
@@ -680,20 +680,20 @@
       </div>
     </div>
 
-    <!-- Column 2: Explore -->
+    <!-- Column 2: Navigation -->
     <div class="footer-col footer-col-links">
       <div class="footer-col-header">
-        <h3 class="col-title">Explore</h3>
+        <h3 class="col-title">Navigation</h3>
         <div class="col-dash"></div>
       </div>
 
       <ul class="footer-nav-list">
-        <li><a href="#about" (click)="$event.preventDefault()"><span class="chevron">›</span> About</a></li>
-        <li><a href="#contact" (click)="$event.preventDefault()"><span class="chevron">›</span> Contact</a></li>
-        <li><a href="#team" (click)="$event.preventDefault()"><span class="chevron">›</span> Our Team</a></li>
-        <li><a href="#services" (click)="$event.preventDefault()"><span class="chevron">›</span> Our Services</a></li>
-        <li><a href="#projects" (click)="$event.preventDefault()"><span class="chevron">›</span> Latest Projects</a></li>
-        <li><a href="#pricing" (click)="$event.preventDefault()"><span class="chevron">›</span> Pricing & Plans</a></li>
+        <li><a href="#about" (click)="$event.preventDefault()"><span class="chevron">›</span> About Studio</a></li>
+        <li><a href="#showcase" (click)="$event.preventDefault()"><span class="chevron">›</span> Featured Spaces</a></li>
+        <li><a href="#projects" (click)="$event.preventDefault()"><span class="chevron">›</span> Architectural Portfolio</a></li>
+        <li><a href="#gallery" (click)="$event.preventDefault()"><span class="chevron">›</span> Curated Gallery</a></li>
+        <li><a href="#testimonials" (click)="$event.preventDefault()"><span class="chevron">›</span> Client Reviews</a></li>
+        <li><a href="#enquiry" (click)="$event.preventDefault()"><span class="chevron">›</span> Start A Project</a></li>
       </ul>
     </div>
 
@@ -705,12 +705,12 @@
       </div>
 
       <ul class="footer-nav-list">
-        <li><a href="#wallpapers" (click)="$event.preventDefault()"><span class="chevron">›</span> Room Wallpapers</a></li>
-        <li><a href="#painting" (click)="$event.preventDefault()"><span class="chevron">›</span> Wall Painting</a></li>
-        <li><a href="#sheets" (click)="$event.preventDefault()"><span class="chevron">›</span> Wall Sheets</a></li>
-        <li><a href="#outdoor" (click)="$event.preventDefault()"><span class="chevron">›</span> Outdoor Design</a></li>
-        <li><a href="#pvc" (click)="$event.preventDefault()"><span class="chevron">›</span> PVC Panels</a></li>
-        <li><a href="#interior" (click)="$event.preventDefault()"><span class="chevron">›</span> Interior Designing</a></li>
+        <li><a href="#architecture" (click)="$event.preventDefault()"><span class="chevron">›</span> Architectural Design</a></li>
+        <li><a href="#turnkey" (click)="$event.preventDefault()"><span class="chevron">›</span> Turnkey Renovation</a></li>
+        <li><a href="#joinery" (click)="$event.preventDefault()"><span class="chevron">›</span> Bespoke Joinery</a></li>
+        <li><a href="#interiors" (click)="$event.preventDefault()"><span class="chevron">›</span> Interior Architecture</a></li>
+        <li><a href="#heritage" (click)="$event.preventDefault()"><span class="chevron">›</span> Heritage Restoration</a></li>
+        <li><a href="#landscape" (click)="$event.preventDefault()"><span class="chevron">›</span> Outdoor & Landscape</a></li>
       </ul>
     </div>
 
@@ -732,7 +732,7 @@
           </div>
           <div class="contact-text-box">
             <span class="contact-sub">Call anytime</span>
-            <a href="tel:+980009630" class="contact-main">+ 98 (000) - 9630</a>
+            <a href="tel:+34914567890" class="contact-main">+34 (91) 456-7890</a>
           </div>
         </div>
 
@@ -745,8 +745,8 @@
             </svg>
           </div>
           <div class="contact-text-box">
-            <span class="contact-sub">Send email</span>
-            <a href="mailto:ambed&#64;company.com" class="contact-main">ambed&#64;company.com</a>
+            <span class="contact-sub">Direct inquiry</span>
+            <a href="mailto:hello&#64;renovast.com" class="contact-main">hello&#64;renovast.com</a>
           </div>
         </div>
 
@@ -759,8 +759,8 @@
             </svg>
           </div>
           <div class="contact-text-box">
-            <span class="contact-sub">380 St Kilda Road</span>
-            <span class="contact-main">Melbourne, Australia</span>
+            <span class="contact-sub">Studio Headquarters</span>
+            <span class="contact-main">Passeig de Gràcia 48, Barcelona</span>
           </div>
         </div>
 
@@ -772,7 +772,7 @@
   <!-- Bottom Copyright & Scroll-To-Top Bar -->
   <div class="footer-bottom-strip">
     <div class="bottom-strip-inner">
-      <p class="copyright-text">© Copyright 2023 by Ambed WordPress Theme</p>
+      <p class="copyright-text">© 2024 Renovast Architectural Studio. All rights reserved.</p>
       
       <button class="btn-scroll-top" (click)="scrollToTop()" aria-label="Scroll to top">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
