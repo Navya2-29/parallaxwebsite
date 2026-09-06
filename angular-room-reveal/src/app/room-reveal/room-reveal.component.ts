@@ -162,7 +162,7 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
       materials: 'Travertine Stone, Fluted Oak, Burnished Brass',
       desc: 'An iconic cliffside residence sculpted with cantilevered raw concrete, warm travertine stone, and floor-to-ceiling panoramic ocean glazing that seamlessly blurs the boundary between interior tranquility and Mediterranean grandeur.',
       image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=80',
-      accentColor: '#C4A470',
+      accentColor: '#778663',
       badge: 'Award Winner 2024',
     },
     {
@@ -177,7 +177,7 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
       materials: 'Microcement, Smoked Walnut, Black Steel',
       desc: 'A double-height urban sanctuary featuring bespoke acoustic walnut wall paneling, a monolithic black granite sculptural kitchen island, and hidden ambient lighting designed for timeless modern living.',
       image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1600&q=80',
-      accentColor: '#8FA89B',
+      accentColor: '#8FA377',
       badge: 'Featured in AD Spain',
     },
     {
@@ -192,7 +192,7 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
       materials: 'Reclaimed Terracotta, Cast Bronze, Italian Marble',
       desc: 'Preserving 19th-century structural arches and ornate plasterwork while seamlessly integrating cutting-edge geothermal climate systems, bespoke brass fixtures, and a secluded courtyard reflection pool.',
       image: 'https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=1600&q=80',
-      accentColor: '#C99E74',
+      accentColor: '#667753',
       badge: 'Heritage Excellence',
     },
     {
@@ -207,7 +207,7 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
       materials: 'White Limestone, Bleached Ash, Architectural Glass',
       desc: 'Harmonious organic architecture engineered with passive solar cooling, curved limestone masonry, infinity reflection pools, and seamless indoor-outdoor living pavilions overlooking the Balearic Sea.',
       image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=80',
-      accentColor: '#7BA098',
+      accentColor: '#9DB387',
       badge: 'Sustainable Design 2024',
     },
   ];
@@ -399,7 +399,7 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
       title: 'LA SOLANA',
       desc: 'Structural engineering precision combined with contemporary aesthetic design.',
       image: 'https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=1200&q=80',
-      cardBg: '#F2EDE4',
+      cardBg: '#EEF2E8',
       buttonText: 'El proyecto',
     },
     {
@@ -409,7 +409,7 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
       title: 'PLAZA ESPAÑA 9',
       desc: 'Hand-picked timber, eco-conscious stone, and non-toxic architectural finishes.',
       image: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=80',
-      cardBg: '#616668',
+      cardBg: '#536049',
       buttonText: 'El proyecto',
     },
     {
@@ -419,7 +419,7 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
       title: 'RUA PEXEGUEIRO',
       desc: 'Smart climate optimization, energy-efficient glazing, and solar integration.',
       image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
-      cardBg: '#C7D7E5',
+      cardBg: '#C5D0BA',
       buttonText: 'El proyecto',
     },
     {
@@ -429,7 +429,7 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
       title: 'JUNO',
       desc: 'Seamless architectural landscape integration and outdoor living balance.',
       image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80',
-      cardBg: '#E5DFD5',
+      cardBg: '#E2E8DC',
       buttonText: 'Soon',
     },
     {
@@ -439,7 +439,7 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
       title: 'POL43',
       desc: 'Custom interior joinery, bespoke lighting, and tailored finishes.',
       image: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=80',
-      cardBg: '#3E4244',
+      cardBg: '#323C2C',
       buttonText: 'Soon',
     },
   ];
