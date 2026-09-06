@@ -1050,6 +1050,274 @@
       }
     }
   }
+
+  /* 6. Stacking Right-to-Left Project Pages (Sheet-over-sheet / Hover-stacking pages) */
+  .project-page-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    will-change: transform, filter, opacity;
+    background: linear-gradient(145deg, #13171b 0%, #080b0d 100%);
+    border-left: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: -35px 0 85px rgba(0, 0, 0, 0.88), -12px 0 30px rgba(0, 0, 0, 0.55);
+    box-sizing: border-box;
+
+    .project-page-card {
+      width: min(92vw, 1380px);
+      height: min(84vh, 740px);
+      display: grid;
+      grid-template-columns: 1fr 1.06fr;
+      gap: clamp(32px, 4.5vw, 68px);
+      align-items: center;
+      box-sizing: border-box;
+    }
+
+    /* Left Column: Details, Description, Specs & CTA */
+    .project-left-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      .project-header-meta {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 12px;
+
+        .project-number-badge {
+          font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
+          font-size: 11.5px;
+          font-weight: 700;
+          letter-spacing: 0.15em;
+          color: #a9884f;
+          background: rgba(169, 136, 79, 0.14);
+          border: 1px solid rgba(169, 136, 79, 0.32);
+          padding: 4px 10px;
+          border-radius: 999px;
+          display: inline-block;
+        }
+
+        .project-category-tag {
+          font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 0.22em;
+          color: rgba(255, 255, 255, 0.65);
+          text-transform: uppercase;
+        }
+      }
+
+      .project-main-title {
+        font-family: 'Bodoni Moda', 'Playfair Display', Georgia, serif;
+        font-size: clamp(28px, 3.2vw, 52px);
+        font-weight: 400;
+        line-height: 1.12;
+        letter-spacing: -0.025em;
+        color: #ffffff;
+        text-transform: uppercase;
+        margin: 0 0 14px 0;
+      }
+
+      .project-location-bar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        color: rgba(255, 255, 255, 0.7);
+        text-transform: uppercase;
+        margin-bottom: 18px;
+
+        .loc-item {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          color: #a9884f;
+        }
+
+        .meta-dot {
+          color: rgba(255, 255, 255, 0.3);
+        }
+
+        .year-item {
+          color: rgba(255, 255, 255, 0.55);
+        }
+      }
+
+      .project-description-text {
+        font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
+        font-size: clamp(13px, 0.95vw, 15px);
+        line-height: 1.75;
+        color: rgba(255, 255, 255, 0.78);
+        margin: 0 0 22px 0;
+        max-width: 580px;
+      }
+
+      .project-specs-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 26px;
+
+        .spec-card {
+          background: rgba(255, 255, 255, 0.035);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 12px;
+          padding: 10px 14px;
+          display: flex;
+          flex-direction: column;
+          gap: 3px;
+
+          &.spec-full {
+            grid-column: 1 / -1;
+          }
+
+          .spec-label {
+            font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            color: #a9884f;
+            text-transform: uppercase;
+          }
+
+          .spec-value {
+            font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
+            font-size: 12.5px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.92);
+          }
+        }
+      }
+
+      .project-action-row {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+
+        .btn-explore-project {
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+          padding: 12px 24px;
+          border-radius: 999px;
+          background: #a9884f;
+          color: #0c0f12;
+          font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
+          font-size: 12px;
+          font-weight: 700;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          text-decoration: none;
+          transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+          box-shadow: 0 8px 24px rgba(169, 136, 79, 0.35);
+
+          svg {
+            transition: transform 0.3s ease;
+          }
+
+          &:hover {
+            background: #c4a470;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(169, 136, 79, 0.5);
+
+            svg {
+              transform: translateX(4px);
+            }
+          }
+        }
+
+        .project-badge-pill {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          padding: 7px 14px;
+          border-radius: 999px;
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
+          font-size: 11px;
+          font-weight: 600;
+          color: rgba(255, 255, 255, 0.82);
+
+          .badge-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #a9884f;
+            box-shadow: 0 0 8px #a9884f;
+          }
+        }
+      }
+    }
+
+    /* Right Column: Architectural Photography Media Box */
+    .project-right-media {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .project-image-wrapper {
+        width: 100%;
+        height: clamp(380px, 60vh, 620px);
+        border-radius: 20px;
+        overflow: hidden;
+        position: relative;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        box-shadow: 0 24px 70px rgba(0, 0, 0, 0.7);
+        background: #15191d;
+
+        .project-img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+          transform: scale(1.01);
+          transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        &:hover .project-img {
+          transform: scale(1.05);
+        }
+
+        .project-media-overlay {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(180deg, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0.32) 100%);
+          pointer-events: none;
+        }
+
+        .project-floating-tag {
+          position: absolute;
+          top: 18px;
+          right: 18px;
+          background: rgba(12, 15, 18, 0.75);
+          backdrop-filter: blur(10px);
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          padding: 6px 14px;
+          border-radius: 999px;
+          font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
+          font-size: 10.5px;
+          font-weight: 700;
+          letter-spacing: 0.18em;
+          color: #ffffff;
+          text-transform: uppercase;
+          z-index: 2;
+        }
+      }
+    }
+  }
 }
 
 @media (max-width: 992px) {
@@ -1070,6 +1338,35 @@
     .about-images {
       padding-bottom: 40px;
       padding-right: 40px;
+    }
+  }
+
+  .showcase-scrolly {
+    .project-page-layer {
+      .project-page-card {
+        grid-template-columns: 1fr;
+        height: auto;
+        max-height: 90vh;
+        overflow-y: auto;
+        gap: 24px;
+        padding: 24px 20px;
+      }
+
+      .project-left-content {
+        order: 2;
+
+        .project-specs-grid {
+          margin-bottom: 16px;
+        }
+      }
+
+      .project-right-media {
+        order: 1;
+
+        .project-image-wrapper {
+          height: 240px;
+        }
+      }
     }
   }
 }

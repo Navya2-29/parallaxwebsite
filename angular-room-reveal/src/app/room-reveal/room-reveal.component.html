@@ -339,5 +339,78 @@
       </div>
     </div>
 
+    <!-- 6. Stacking Right-to-Left Project Pages (Page placed over page / hover-stacking look) -->
+    <div class="project-page-layer" *ngFor="let proj of projectsList; let i = index" [attr.data-project-index]="i"
+      [style.z-index]="25 + i">
+      <div class="project-page-card">
+        
+        <!-- Left Side: Title, Details, Scope, Description, Specifications & CTA -->
+        <div class="project-left-content">
+          <div class="project-header-meta">
+            <span class="project-number-badge">{{ proj.num }} / 0{{ projectsList.length }}</span>
+            <span class="project-category-tag">{{ proj.tag }}</span>
+          </div>
+
+          <h3 class="project-main-title">{{ proj.title }}</h3>
+
+          <div class="project-location-bar">
+            <span class="loc-item">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 21s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 7.2c0 7.3-8 11.8-8 11.8z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+              {{ proj.location }}
+            </span>
+            <span class="meta-dot">•</span>
+            <span class="year-item">{{ proj.year }}</span>
+          </div>
+
+          <p class="project-description-text">{{ proj.desc }}</p>
+
+          <!-- Specifications Grid -->
+          <div class="project-specs-grid">
+            <div class="spec-card">
+              <span class="spec-label">Scope</span>
+              <span class="spec-value">{{ proj.scope }}</span>
+            </div>
+            <div class="spec-card">
+              <span class="spec-label">Surface Area</span>
+              <span class="spec-value">{{ proj.area }}</span>
+            </div>
+            <div class="spec-card spec-full">
+              <span class="spec-label">Key Materials</span>
+              <span class="spec-value">{{ proj.materials }}</span>
+            </div>
+          </div>
+
+          <!-- Project Actions & Accreditations -->
+          <div class="project-action-row">
+            <a href="#" class="btn-explore-project" (click)="$event.preventDefault()">
+              <span>Explore Case Study</span>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </a>
+            <div class="project-badge-pill" *ngIf="proj.badge">
+              <span class="badge-dot"></span>
+              {{ proj.badge }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side: Architectural Photography Media -->
+        <div class="project-right-media">
+          <div class="project-image-wrapper">
+            <img [src]="proj.image" [alt]="proj.title" class="project-img" />
+            <div class="project-media-overlay"></div>
+            <div class="project-floating-tag">
+              <span>{{ proj.year }} • ARCHITECTURE</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
   </div>
 </section>

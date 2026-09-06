@@ -28,6 +28,22 @@ export interface AboutSquare {
   size: number;
 }
 
+export interface ProjectItem {
+  id: string;
+  num: string;
+  tag: string;
+  title: string;
+  location: string;
+  year: string;
+  scope: string;
+  area: string;
+  materials: string;
+  desc: string;
+  image: string;
+  accentColor: string;
+  badge?: string;
+}
+
 @Component({
   selector: 'app-room-reveal',
   standalone: true,
@@ -89,6 +105,70 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
       location: 'VALENCIA',
       year: '2023',
       image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1600&q=80',
+    },
+  ];
+
+  // Architectural Project Cards with Left Details & Right Image for Right-to-Left Page Stacking
+  projectsList: ProjectItem[] = [
+    {
+      id: '01',
+      num: '01',
+      tag: 'RESIDENTIAL ARCHITECTURE',
+      title: 'THE MONOLITH HOUSE',
+      location: 'COSTA BRAVA, SPAIN',
+      year: '2024',
+      scope: 'Architecture & Turnkey Interior Renovation',
+      area: '740 m²',
+      materials: 'Travertine Stone, Fluted Oak, Burnished Brass',
+      desc: 'An iconic cliffside residence sculpted with cantilevered raw concrete, warm travertine stone, and floor-to-ceiling panoramic ocean glazing that seamlessly blurs the boundary between interior tranquility and Mediterranean grandeur.',
+      image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=80',
+      accentColor: '#C4A470',
+      badge: 'Award Winner 2024',
+    },
+    {
+      id: '02',
+      num: '02',
+      tag: 'MINIMALIST INTERIORS',
+      title: 'KAZA PENTHOUSE',
+      location: 'MADRID, SPAIN',
+      year: '2024',
+      scope: 'Penthouse Remodeling & Bespoke Joinery',
+      area: '480 m²',
+      materials: 'Microcement, Smoked Walnut, Black Steel',
+      desc: 'A double-height urban sanctuary featuring bespoke acoustic walnut wall paneling, a monolithic black granite sculptural kitchen island, and hidden ambient lighting designed for timeless modern living.',
+      image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1600&q=80',
+      accentColor: '#8FA89B',
+      badge: 'Featured in AD Spain',
+    },
+    {
+      id: '03',
+      num: '03',
+      tag: 'HERITAGE RESTORATION',
+      title: 'PALACIO SAN MATEO',
+      location: 'SEVILLE, SPAIN',
+      year: '2023',
+      scope: 'Historic Preservation & Modern Revival',
+      area: '860 m²',
+      materials: 'Reclaimed Terracotta, Cast Bronze, Italian Marble',
+      desc: 'Preserving 19th-century structural arches and ornate plasterwork while seamlessly integrating cutting-edge geothermal climate systems, bespoke brass fixtures, and a secluded courtyard reflection pool.',
+      image: 'https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=1600&q=80',
+      accentColor: '#C99E74',
+      badge: 'Heritage Excellence',
+    },
+    {
+      id: '04',
+      num: '04',
+      tag: 'COASTAL SANCTUARY',
+      title: 'AURA HORIZON VILLA',
+      location: 'IBIZA, SPAIN',
+      year: '2024',
+      scope: 'Passive Architecture & Landscape Integration',
+      area: '620 m²',
+      materials: 'White Limestone, Bleached Ash, Architectural Glass',
+      desc: 'Harmonious organic architecture engineered with passive solar cooling, curved limestone masonry, infinity reflection pools, and seamless indoor-outdoor living pavilions overlooking the Balearic Sea.',
+      image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=80',
+      accentColor: '#7BA098',
+      badge: 'Sustainable Design 2024',
     },
   ];
 
@@ -676,6 +756,7 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
     const showcaseSection = this.showcaseSectionRef.nativeElement;
     const cards = gsap.utils.toArray<HTMLElement>(showcaseSection.querySelectorAll('.showcase-card'));
     const projectsPanel = this.projectsPanelRef?.nativeElement;
+    const projectPages = gsap.utils.toArray<HTMLElement>(showcaseSection.querySelectorAll('.project-page-layer'));
 
     if (cards.length === 0) return;
 
@@ -700,6 +781,15 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
       if (projectsPanel) {
         gsap.set(projectsPanel, { xPercent: 100 });
       }
+
+      // Initial state for stacking project pages (off-screen to the right)
+      projectPages.forEach((page) => {
+        gsap.set(page, {
+          xPercent: 100,
+          scale: 1,
+          filter: 'brightness(1)',
+        });
+      });
 
       const showcaseTl = gsap.timeline({ paused: true });
 
@@ -753,7 +843,7 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
         ease: 'power2.inOut',
       }, projectsStartTime);
 
-      // Full-screen Projects section slides in from right (100% -> 0%)
+      // Full-screen Projects intro section slides in from right (100% -> 0%)
       if (projectsPanel) {
         showcaseTl.to(projectsPanel, {
           xPercent: 0,
@@ -762,10 +852,55 @@ export class RoomRevealComponent implements OnInit, AfterViewInit, OnDestroy {
         }, projectsStartTime);
       }
 
+      // Step 5: Sequential Right-to-Left Stacking Project Pages (Hover/Page-over-page effect)
+      let currentTimelineTime = projectsStartTime + projectsDuration + 0.8;
+
+      projectPages.forEach((page, index) => {
+        const pageDuration = 1.4;
+        const holdTime = 1.2;
+
+        // 1. If it's the first project page (index 0), scale down and dim the projectsPanel behind it
+        if (index === 0 && projectsPanel) {
+          showcaseTl.to(projectsPanel, {
+            scale: 0.94,
+            filter: 'brightness(0.5)',
+            opacity: 0.35,
+            duration: pageDuration,
+            ease: 'power2.inOut',
+          }, currentTimelineTime);
+        }
+
+        // 2. If it's a subsequent page (index > 0), the previous project page moves slightly left and dims as the new page covers it
+        if (index > 0) {
+          const prevPage = projectPages[index - 1];
+          showcaseTl.to(prevPage, {
+            xPercent: -12,
+            scale: 0.95,
+            filter: 'brightness(0.6)',
+            duration: pageDuration,
+            ease: 'power2.inOut',
+          }, currentTimelineTime);
+        }
+
+        // 3. Current page slides in from Right to Left directly over the previous layer
+        showcaseTl.fromTo(page,
+          { xPercent: 100 },
+          {
+            xPercent: 0,
+            duration: pageDuration,
+            ease: 'power2.out',
+          },
+          currentTimelineTime
+        );
+
+        // Advance timeline
+        currentTimelineTime += pageDuration + holdTime;
+      });
+
       this.showcaseTrigger = ScrollTrigger.create({
         trigger: showcaseSection,
         start: 'top top',
-        end: () => '+=' + window.innerHeight * 7,
+        end: () => '+=' + window.innerHeight * (8 + (projectPages.length || 4) * 2.2),
         pin: true,
         scrub: 0.85,
         anticipatePin: 1,
